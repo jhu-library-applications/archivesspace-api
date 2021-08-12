@@ -1,8 +1,8 @@
-import json
 import requests
 import secrets
 import time
-import csv
+import pandas as pd
+from datetime import datetime
 
 secretsVersion = input('To edit production server, enter the name of the secrets file: ')
 if secretsVersion != '':
@@ -31,20 +31,23 @@ endpoint = '/repositories/'+repository+'/archival_objects?all_ids=true'
 ids = requests.get(baseURL + endpoint, headers=headers).json()
 print(len(ids))
 
-f = csv.writer(open('archivalObjectTitles.csv', 'w'))
-f.writerow(['title']+['uri'])
-
+allItems = []
 for id in ids:
     print(id)
+    idDict = {}
     endpoint = '/repositories/'+repository+'/archival_objects/'+str(id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
-    try:
-        title = output['title']
-    except:
-        title = ''
-    uri = output['uri']
+    title = output.get('title')
+    uri = output.get('uri')
     print(title, uri)
-    f.writerow([title]+[uri])
+    idDict = {'uri': uri, 'title': title}
+    allItems.append(idDict)
+
+df = pd.DataFrame.from_dict(allItems)
+print(df.head(15))
+dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
+df.to_csv('aspaceResourcesBib_'+dt+'.csv', index=False)
+
 
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)

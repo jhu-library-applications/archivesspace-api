@@ -1,8 +1,8 @@
-import json
 import requests
 import secrets
-import csv
 import argparse
+import pandas as pd
+from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-e', '--entity', help='options: people, corporate_entites, families')
@@ -29,33 +29,37 @@ print(endpoint)
 
 ids = requests.get(baseURL + endpoint, headers=headers).json()
 
-f = csv.writer(open('notPublished'+type_entity+'.csv', 'w'))
-f.writerow(['uri']+['publish']+['name']+['date']+['rules']+['creator'])
-
 total = len(ids)
+allItems = []
 for id in ids:
     print('id', id, total, 'records remaining')
     total = total - 1
     endpoint = '/agents/'+type_entity+'/'+str(id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
-
+    idDict = {}
     uri = output['uri']
-    name = output['names'][0]['sort_name'].strip()
+    idDict['uri'] = uri
+    zeroName = output['names'][0]
+    name = zeroName['sort_name'].strip()
+    idDict['name'] = name
     create_time = output['create_time']
-    try:
-        created_by = output['created_by']
-    except:
-        created_by = ''
-    try:
-        rules = output['names'][0]['rules']
-    except:
-        rules = ''
-    try:
-        publish = output['publish']
-        if not publish:
-            f.writerow([uri]+[publish]+[name]+[create_time]+[rules]+[created_by])
-    except:
-        publish = ''
-        f.writerow([uri]+[publish]+[name]+[create_time]+[rules]+[created_by])
-    else:
-        pass
+    idDict['create_time'] = create_time
+    created_by = output.get('created_by')
+    idDict['created_by'] = created_by
+    rules = zeroName.get('rules')
+    idDict['rules'] = rules
+    publish = output.get('publish')
+    if publish is False:
+        idDict['publish'] = publish
+        allItems.append(idDict)
+
+df = pd.DataFrame.from_dict(allItems)
+print(df.head(15))
+dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
+df.to_csv('notPublished'+type_entity+'_'+dt+'.csv', index=False)
+
+
+elapsedTime = time.time() - startTime
+m, s = divmod(elapsedTime, 60)
+h, m = divmod(m, 60)
+print('Total script run time: ', '%d:%02d:%02d' % (h, m, s))

@@ -1,6 +1,7 @@
 import requests
 import secrets
-import csv
+import pandas as pd
+from datetime import datetime
 
 secretsVersion = input('To edit production server, enter secrets filename: ')
 if secretsVersion != '':
@@ -27,28 +28,35 @@ endpoint = '/repositories/'+repository+'/'+recordType+'?all_ids=true'
 
 ids = requests.get(baseURL+endpoint, headers=headers).json()
 
-f = csv.writer(open(recordType+'UrisAndIds.csv', 'w'))
-f.writerow(['ConCatID']+['id_0']+['id_1']+['id_2']+['id_3']+['id'])
-
+total = len(ids)
+allItems = []
 for id in ids:
-    print(id)
+    print('id', id, total, recordType, ' remaining')
+    total = total - 1
+    idDict = {}
     endpoint = '/repositories/'+repository+'/'+recordType+'/'+str(id)
+    idDict['uri'] = endpoint
     output = requests.get(baseURL + endpoint, headers=headers).json()
-    try:
-        id_0 = output['id_0']
-    except KeyError:
-        id_0 = ''
-    try:
-        id_1 = '.'+output['id_1']
-    except KeyError:
-        id_1 = ''
-    try:
-        id_2 = '.'+output['id_2']
-    except KeyError:
-        id_2 = ''
-    try:
-        id_3 = '.'+output['id_3']
-    except KeyError:
-        id_3 = ''
-    ConCatID = id_0+id_1+id_2+id_3
-    f.writerow([ConCatID]+[id_0]+[id_1[1:]]+[id_2[1:]]+[id_3[1:]]+[endpoint])
+    id_0 = output.get('id_0')
+    id_1 = output.get('id_1')
+    id_2 = output.get('id_2')
+    id_3 = output.get('id_3')
+    if id_0 and id_1 and id_2 and id_3:
+        ConCatID = id_0+'.'+id_1+'.'+id_2+'.'+id_3
+        idDict['ConCatID'] = ConCatID
+    idDict['id_0'] = id_0
+    idDict['id_1'] = id_1
+    idDict['id_2'] = id_3
+    idDict['id_3'] = id_3
+    allItems.append(idDict)
+
+df = pd.DataFrame.from_dict(allItems)
+print(df.head(15))
+dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
+df.to_csv(recordType+'_'+dt+'UrisAndIds.csv', index=False)
+
+
+elapsedTime = time.time() - startTime
+m, s = divmod(elapsedTime, 60)
+h, m = divmod(m, 60)
+print('Total script run time: ', '%d:%02d:%02d' % (h, m, s))

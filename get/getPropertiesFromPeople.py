@@ -1,6 +1,7 @@
 import requests
 import secrets
-import csv
+import pandas as pd
+from datetime import datetime
 import time
 
 secretsVersion = input('To edit production server, enter secrets file name: ')
@@ -28,20 +29,26 @@ print('authenticated')
 endpoint = '/agents/people?all_ids=true'
 
 ids = requests.get(baseURL + endpoint, headers=headers).json()
+print(len(ids))
 
-records = []
+allItems = []
 for id in ids:
+    print(id)
     endpoint = '/agents/people/'+str(id)
     output = requests.get(baseURL+endpoint, headers=headers).json()
-    records.append(output)
+    idDict = {}
+    uri = output['uri']
+    sort_name = output['names'][0]['sort_name']
+    authority_id = output['names'][0].get('authority_id', '')
+    idDict['uri'] = uri
+    idDict['sort_name'] = sort_name
+    idDict['authority_id'] = authority_id
+    allItems.append(idDict)
 
-f = csv.writer(open('asResults.csv', 'w'))
-f.writerow(['uri']+['sort_name']+['authority_id'])
-for i in range(0, len(records)):
-    uri = records[i]['uri']
-    sort_name = records[i]['names'][0]['sort_name']
-    authority_id = records[i]['names'][0].get('authority_id', '')
-    f.writerow([uri]+[sort_name]+[authority_id])
+df = pd.DataFrame.from_dict(allItems)
+print(df.head(15))
+dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
+df.to_csv('peopleProperties_'+dt+'.csv', index=False)
 
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)

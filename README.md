@@ -4,152 +4,159 @@ Python scripts used to perform various tasks with the ArchivesSpace API
 
 All of these scripts require a secrets.py file in the same directory that must contain the following text:
 
-	baseURL='[ArchivesSpace API URL]'
-	user='[user name]'
-	password='[password]'
-	repository='[repository]'
+	baseURL = '[ArchivesSpace API URL]'
+	user = '[user name]'
+	password = '[password]'
+	repository = '[repository]'
 
 This secrets.py file will be ignored according to the repository's .gitignore file so that ArchivesSpace login details will not be inadvertently exposed through GitHub.
 
 If you are using both a development server and a production server, you can create a separate secrets.py file with a different name (e.g. secretsProd.py) and containing the production server information. When running each of these scripts, you will be prompted to enter the file name (e.g 'secretsProd' without '.py') of an alternate secrets file. If you skip the prompt or incorrectly type the file name, the scripts will default to the information in the secrets.py file. This ensures that you will only access the production server if you really intend to.
 
+## Helpful links
+
+- [ArchivesSpace JSON Schema List](https://archivesspace.github.io/archivesspace/doc/schema_list.html)
+- [ArchivesSpace API Reference](https://archivesspace.github.io/archivesspace/api/)
+
 ## Scripts
 
-#### [addBibNumbersAndPost.py](/addBibNumbersAndPost.py)
-Based on a specified CSV file with URIs and bib numbers, posts the specified bib number to the ['user_defined]['real_1'] field for record specified by the URI.
+### create
 
-#### [dateCheck.py](/dateCheck.py)
-Retrieves 'begin,' 'end,' 'expression,' and 'date_type' for all dates associated with all resources in a repository
-
-#### [eadToCsv.py](/eadToCsv.py)
+#### [createDigitalObjects.py](/create/createDigitalObjects.py)
+Creates a Digital Object JSON file from a CSV.
+#### [eadToCsv.py](/create/eadToCsv.py)
 Based on a specified file name and a specified file path, extracts selected elements from an EAD XML file and prints them to a CSV file.
 
-#### [getAccessionUDFs.py](/getAccessionUDFs.py)
-Retrieves all of the user-defined fields from all of the accessions in the specified repository.
+### get
 
-#### [getAccessions.py](/getAccessions.py)
-Retrieves all of the accessions from a particular repository into a JSON file.
+#### [getAccessionUDFs.py](/get/getAccessionUDFs.py)
+Retrieves all user-defined fields from all accessions in the specified repository.
 
-#### [getAllArchivalObjectTitles.py](/getAllArchivalObjectTitles.py)
+#### [getAccessions.py](/get/getAccessions.py)
+Retrieves all accessions from a particular repository into a JSON file.
+
+#### [getAllArchivalObjectTitles.py](/get/getAllArchivalObjectTitles.py)
 Retrieves titles from all archival objects in a repository. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
 
-#### [getArchivalObjectCountByResource.py](/getArchivalObjectCountByResource.py)
+#### [getArchivalObjectCountByResource.py](/get/getArchivalObjectCountByResource.py)
 Retrieves a count of archival objects associated with a particular resource. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
 
-#### [getArchivalObjectsByResource.py](/getArchivalObjectsByResource.py)
-Extracts all of the archival objects associated with a particular resource. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
+#### [getArchivalObjectsByResource.py](/get/getArchivalObjectsByResource.py)
+Retrieves all archival objects associated with a particular resource. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
 
-#### [getArchivalObjectRefIdsForResource.py](/getArchivalObjectRefIdsForResource.py)
-Extracts the title, URI, ref_id, date expression, and level for all archival objects associated with a particular resource. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
+#### [getArchivalObjectRefIdsForResource.py](/get/getArchivalObjectRefIdsForResource.py)
+Retrieves the title, URI, ref_id, date expression, and level for all archival objects associated with a particular resource. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
 
-#### [getArrayPropertiesFromAgentsPeopleCSV.py](/getArrayPropertiesFromAgentsPeopleCSV.py)
-Retrieves specific properties, including proprerties that have arrays as values, from the JSON of ArchivesSpace agent_people records. In this example, the 'dates_of existence' property contains an array that must be iterated over. This requires a second level of iteration with 'for j in range (...)' on line 20, which is in addition to the iteration function 'for i in range (...)' on line 19, which was also found in the getPropertiesFromAgentsPeopleCSV.py script. As with the previous script, it also writes the properties' values into a CSV file which is specified in variable 'f' on line 17.
+#### [getArrayPropertiesFromPeople.py](/get/getArrayPropertiesFromPeople.py)
+Retrieves specific properties, including properties that have arrays as values, from the JSON of ArchivesSpace agent_people records.
 
-####
-[getEntitiesNotPublished.py](/getEntitiesNotPublished.py)
-This script pulls unpublished entities (where Publish = False) from ArchivesSpace and lists them in a CSV file.
+#### [getEntitiesNotPublished.py](/get/getEntitiesNotPublished.py)
+Retrieves unpublished entities (where Publish = False) from ArchivesSpace and lists them in a CSV file.
 
 Using the argparse module, the user enters in the terminal either "people," "corporate_entities," or "families" to search for unpublished entities under those categories. The CSV also prints several properties of the unpublished agent, which can be adjusted in the script based on information needs.
 
-#### [getPropertiesFromAgentsPeopleCSV.py](/getPropertiesFromAgentsPeopleCSV.py)
-Retrieves specific properties from the JSON of ArchivesSpace agent_people records into a CSV file which is specified in variable 'f' on line 17. In this example, the script retrieves the 'uri,' 'sort_name,' 'authority_id,' and 'names' properties from the JSON records by iterating through the JSON records with the function 'for i in range (...)' on line 19. The f.writerow(....) function on line 20 specifies which properties are retrieved from the JSON and the f.writerow(....) on line 18 specifies header row of the CSV file.  
+#### [getPropertiesFromResources.py](/get/getPropertiesFromResources.py)
+Retrieves select properties from all resources in the repository.
 
-#### [getPropertiesFromResources.py](/getPropertiesFromResources.py)
-Extracts select properties from all resources in the repository.
+#### [getPropertiesFromSingleResource.py](/get/getPropertiesFromSingleResource.py)
+Based on user input, retrieves select properties from the specified resource.
 
-#### [getPropertiesFromSingleResource.py](/getPropertiesFromSingleResource.py)
-Based on user input, extracts select properties from the specified resource.
-
-#### [getResources.py](/getResources.py)
-Retrieves all of the resources from a particular repository into a JSON file which is specified in variable 'f' on line 16. This GET script can be adapted to other record types by editing the 'endpoint' variable on line 13 (e.g. 'repositories/[repo ID]/accessions' or 'agents/corporate_entities').
-
-#### [getSingleRecord.py](/getSingleRecord.py)
+#### [getSingleResource.py](/get/getSingleResource.py)
 Based on user input, retrieves a single ArchivesSpace record based on the specified record's 'uri.'
 
-#### [getTopContainerCountByResource.py](/getTopContainerCountByResource.py)
+#### [getTopContainerCountByResource.py](/get/getTopContainerCountByResource.py)
 Retrieves a count of top containers associated with archival objects associated with a particular resource. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
 
-#### [getTopContainerCountByResourceNoAOs.py](/getTopContainerCountByResourceNoAOs.py)
+#### [getTopContainerCountByResourceNoAOs.py](/get/getTopContainerCountByResourceNoAOs.py)
 Retrieves a count of top containers directly associated (not through an archival object) with a particular resource. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
 
-#### [getTopContainers.py](/getTopContainers.py)
-Retrieves all of the top containers from a particular repository into a JSON file.
+#### [getTopContainers.py](/get/getTopContainers.py)
+Retrieves all top containers from a particular repository into a JSON file.
 
-#### [getUrisAndIds.py](/getUrisAndIds.py)
+#### [getUnassociatedContainers.py](/get/getUnassociatedContainers.py)
+Prints the URIs to a CSV file of all top containers that are not associated with a resource or archival object.
+
+#### [getUrisAndIds.py](/get/getUrisAndIds.py)
 For the specified record type, retrieves URI and the 'id_0,' 'id_1,' 'id_2,' 'id_3,' and a concatenated version of all the 'id' fields.
 
-### [getURIsFromKeywordSearch.py](/getURIsFromKeywordSearch.py)
+#### [getURIsFromKeywordSearch.py](/get/getURIsFromKeywordSearch.py)
 
 You can choose one or more types of records (accession, resource, subject, agent, location, or archival_object) to search in ArchiveSpace by a certain keyword. This will return a CSV with the URIs of records with that keyword.
 
-### [getUserDefinedFieldsFromResources.py](/getUserDefinedFieldsFromResources.py)
+#### [getUserDefinedFieldsFromResources.py](/get/getUserDefinedFieldsFromResources.py)
 
 This script searches the following user-defined fields in all resources and accessions for any values.
 
-1)accessionAcknowledged
-2)selector
-3)assignedTo
-4)appraisalLegacy
-5)custodialHistory
-6)electronicRecordLog
-7)relatedMaterialsNote
-8)archiveItSeeds
-9)appraisal
-10)accessionStatus
+1. accessionAcknowledged
+2. selector
+3. assignedTo
+4. appraisalLegacy
+5. custodialHistory
+6. electronicRecordLog
+7. relatedMaterialsNote
+8. archiveItSeeds
+9. appraisal
+10. accessionStatus
 
 For records with values in any of its user-defined fields, its title, uri, and all user-defined fields will be recorded in a CSV called UserDefinedFieldsFromResources.csv.
 
-#### [modifyDigitalObjectUrls.py](/modifyDigitalObjectUrls.py)
-Based on user input, replaces a string in the URLs in both the 'Identifier' and 'File URI' fields for digital objects across the repository.
+#### [getPropertiesFromArchivalObjects.py](/get/getPropertiesFromArchivalObjects.py)
+Retrieves specific properties from the JSON of ArchivesSpace archival_object records into a CSV file.
 
-#### [postContainersFromCSV.py](/postContainersFromCSV.py)
-Creates instances (consisting of top_containers) from a separate CSV file. The CSV file should have two columns, indicator and barcode. The directory where this file is stored must match the directory in the filePath variable. The script will prompt you first for the exact name of the CSV file, and then for the exact resource or accession to attach the containers to.
+#### [getPropertiesFromDigitalObjects.py](/get/getPropertiesFromDigitalObjects.py)
+Retrieves specific properties from the JSON of ArchivesSpace digital_object records into a CSV file.
 
-#### [postContainerLinksToRecords.py](/postContainerLinksToRecords.py)
+#### [getPropertiesFromPeople.py](/get/getPropertiesFromPeople.py)
+Retrieves specific properties from the JSON of ArchivesSpace agent_people records into a CSV file.
+
+### post
+#### [postContainersFromCSV.py](/post/postContainersFromCSV.py)
+Creates instances of top_containers from a separate CSV file. The CSV file should have two columns, indicator and barcode. The directory where this file is stored must match the directory in the filePath variable. The script will prompt you first for the exact name of the CSV file, and then for the exact resource or accession to attach the containers to.
+
+#### [postContainerLinksToRecords.py](/post/postContainerLinksToRecords.py)
 Based on user input, posts containers to a specified record based on a specified CSV file.
 
-#### [postContainerLinksToRecordsFromCSV.py](/postContainerLinksToRecordsFromCSV.py)
+#### [postContainerLinksToRecordsFromCSV.py](/post/postContainerLinksToRecordsFromCSV.py)
 Based on user input, posts containers to a specified record based on a specified CSV file of top container and resource URIs.
 
-#### [postCorporateAgentsFromCSV.py](/postCorporateAgentsFromCSV.py)
+#### [postCorporateAgentsFromCSV.py](/post/postCorporateAgentsFromCSV.py)
 Based on user input, posts corporate agents based on a specified CSV file.
 
-#### [postFamilyAgentsFromCSV.py](/postFamilyAgentsFromCSV.py)
+#### [postDigitalObjects.py](/post/postDigitalObjects.py)
+Posts JSON files of digital objects to specified resource.
+
+#### [postFamilyAgentsFromCSV.py](/post/postFamilyAgentsFromCSV.py)
 Based on user input, posts family agents based on a specified CSV file.
 
-#### [postNew.py](/postNew.py)
-Posts new records to a generic API endpoint based the record type, 'agents/people' in this example. This script can be modified to accommodate other data types (e.g. 'repositories/[repo ID]/resources' or 'agents/corporate_entities'). It requires a properly formatted JSON file (specified where [JSON File] appears in the 'records' variable on line 13) for the particular ArchivesSpace record type you are trying to post.  
+#### [postNew.py](/post/postNew.py)
+Posts new records to a generic API endpoint based the record type, 'agents/people' in this example. This script can be modified to accommodate other data types (e.g. 'repositories/[repo ID]/resources' or 'agents/corporate_entities'). 
 
-#### [postOverwrite.py](/postOverwrite.py)
-Overwrites existing ArchivesSpace records based the 'uri' and can be used with any ArchivesSpace record type (e.g. resource, accession, subject, agent_people, agent_corporate_entity, archival_object, etc.). It requires a properly formatted JSON file (specified where [JSON File] appears in the 'records' variable on line 13) for the particular ArchivesSpace record type you are trying to post.
+It requires a properly formatted JSON file (specified where [JSON File] appears in the 'records' variable) for the particular ArchivesSpace record type you are trying to post.  
 
-#### [postPeopleAgentsFromCSV.py](/postPeopleAgentsFromCSV.py)
+#### [postOverwrite.py](/post/postOverwrite.py)
+Overwrites existing ArchivesSpace records based the 'uri' and can be used with any ArchivesSpace record type (e.g. resource, accession, subject, agent_people, agent_corporate_entity, archival_object, etc.). 
+
+It requires a properly formatted JSON file (specified where [JSON File] appears in the 'records' variable) for the particular ArchivesSpace record type you are trying to post.
+
+#### [postPeopleAgentsFromCSV.py](/post/postPeopleAgentsFromCSV.py)
 Based on user input, posts people agents based on a specified CSV file.
 
-#### [postSubjectsFromCSV.py](/postSubjectsFromCSV.py)
+#### [postSubjectsFromCSV.py](/post/postSubjectsFromCSV.py)
 Based on user input, posts subjects based on a specified CSV file.
 
-#### [resourcesWithBibNum.py](/resourcesWithBibNum.py)
-Extracts URIs of resources with bib numbers in the user-defined 'real_1' field.
+### update
 
-#### [resourcesWithNoBibNum.py](/resourcesWithNoBibNum.py)
-Prints the URIs to a CSV file of all resources in a repository without a bib number stored in the ['user_defined']['real_1'] field.
-
-#### [searchForUnassociatedContainers.py](/searchForUnassociatedContainers.py)
-Prints the URIs to a CSV file of all top containers that are not associated with a resource or archival object.
-
-#### [transferAoDatesToDos.py](/transferAoDatesToDos.py)
+#### [transferAoDatesToDos.py](/update/transferAoDatesToDos.py)
 Transfers the date from an archival object to any attached digital objects.
 
-#### [unpublishArchivalObjectsByResource.py](/unpublishArchivalObjectsByResource.py)
-Unpublishes all archival objects associated with the specified resource. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
+#### [unpublishArchivalObjectsByResource.py](/update/unpublishArchivalObjectsByResource.py)
+Un-publishes all archival objects associated with the specified resource. Upon running the script, you will be prompted enter the resource ID (just the number, not the full URI).
 
-### [updateKeywordInRecords.py](/updateKeywordInRecords.py)
+#### [updateKeywordInRecords.py](/update/updateKeywordInRecords.py)
 This script searches the URIs selected by getURIsFromKeywordSearch.py and finds the relevant properties in that record with the keyword and replaces them. It most likely will NOT find the keyword in all records generated  by getURIsFromKeywordSearch.py, as this script will get a record if one of its related records has the keyword, rather than that record containing the keyword itself.
 
-
-#### [updateResourceWithAgentOrSubjectLinks.py](/updateResourceWithAgentOrSubjectLinks.py)
+#### [updateResourceWithAgentOrSubjectLinks.py](/update/updateResourceWithAgentOrSubjectLinks.py)
 Based on user input, posts agent or subject links to resources based on a specified CSV file.
 
-#### [updateResourceWithCSV.py](/updateResourceWithCSV.py)
+#### [updateResourceWithCSV.py](/update/updateResourceWithCSV.py)
 Based on user input, updates first level (['title']) and second level (['user_defined']['real_1']) elements for resources based on a specified CSV file.

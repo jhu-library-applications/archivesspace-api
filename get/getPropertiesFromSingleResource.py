@@ -26,10 +26,10 @@ session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
 f = csv.writer(open('resourceProperties.csv', 'w'))
-f.writerow(['title']+['uri']+['bibnum']+['type']+['value'])
+f.writerow(['title']+['uri']+['bibnum']+['entity_type']+['value'])
 
-id = input('Enter resource ID: ')
-endpoint = '/repositories/3/resources/'+id
+resource_id = input('Enter resource ID: ')
+endpoint = '/repositories/3/resources/' + resource_id
 output = requests.get(baseURL + endpoint, headers=headers).json()
 print(json.dumps(output))
 
@@ -62,21 +62,21 @@ for note in output['notes']:
     scopecontent = ''
     acqinfo = ''
     custodhist = ''
-    if note['type'] == 'abstract':
+    if note['entity_type'] == 'abstract':
         abstract = note['content'][0]
 
         f.writerow([title]+[uri]+[bibnum]+['abstract']+[abstract])
-    if note['type'] == 'scopecontent':
+    if note['entity_type'] == 'scopecontent':
         scopecontentSubnotes = note['subnotes']
         for subnote in scopecontentSubnotes:
             scopecontent = scopecontent + subnote['content'] + ' '
         f.writerow([title]+[uri]+[bibnum]+['scopecontent']+[scopecontent])
-    if note['type'] == 'acqinfo':
+    if note['entity_type'] == 'acqinfo':
         acqinfoSubnotes = note['subnotes']
         for subnote in acqinfoSubnotes:
             acqinfo = acqinfo + subnote['content'] + ' '
         f.writerow([title]+[uri]+[bibnum]+['acqinfo']+[acqinfo])
-    if note['type'] == 'custodhist':
+    if note['entity_type'] == 'custodhist':
         custodhistSubnotes = note['subnotes']
         for subnote in custodhistSubnotes:
             custodhist = custodhist + subnote['content'] + ' '

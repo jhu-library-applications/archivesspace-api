@@ -36,48 +36,42 @@ csvfile = csv.DictReader(open(targetFile))
 for row in csvfile:
     agentRecord = {}
     names = []
-    name = {}
-    name['primary_name'] = row['primaryName']
-    name['name_order'] = 'inverted'
-    name['jsonmodel_type'] = 'name_person'
-    name['rules'] = 'rda'
-    name['sort_name'] = row['sortName']
+    name = {'primary_name': row['primaryName'], 'name_order': 'inverted', 'jsonmodel_type': 'name_person',
+            'rules': 'rda', 'sort_name': row['sortName']}
     try:
         name['authority_id'] = row['authorityID']
         name['source'] = 'viaf'
-    except:
+    except KeyError:
         pass
     try:
         name['rest_of_name'] = row['restOfName']
-    except:
+    except KeyError:
         name['name_order'] = 'direct'
     try:
         name['fuller_form'] = row['fullerForm']
-    except:
+    except KeyError:
         pass
     try:
         name['title'] = row['title']
-    except:
+    except KeyError:
         pass
     try:
         name['prefix'] = row['prefix']
-    except:
+    except KeyError:
         pass
     try:
         name['suffix'] = row['suffix']
-    except:
+    except KeyError:
         pass
     try:
         name['dates'] = row['date']
-    except:
+    except KeyError:
         pass
     names.append(name)
 
     if row['date'] != '':
         dates = []
-        date = {}
-        date['label'] = 'existence'
-        date['jsonmodel_type'] = 'date'
+        date = {'label': 'existence', 'jsonmodel_type': 'date'}
         if row['expression'] != '':
             date['expression'] = row['expression']
             date['date_type'] = 'single'

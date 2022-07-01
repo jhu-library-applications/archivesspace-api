@@ -30,33 +30,33 @@ endpoint = '/repositories/'+repository+'/accessions?all_ids=true'
 ids = requests.get(baseURL + endpoint, headers=headers).json()
 
 udfs = []
-for id in ids:
-    print(id)
-    endpoint = '/repositories/'+repository+'/accessions/'+str(id)
+for a_id in ids:
+    print(a_id)
+    endpoint = '/repositories/'+repository+'/accessions/'+str(a_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     try:
         userDefined = output['user_defined']
         for k, v in userDefined.items():
             if k not in udfs:
                 udfs.append(k)
-    except:
+    except KeyError:
         userDefined = ''
 udfs.sort()
 udfsHeader = ['title', 'uri'] + udfs
 f = csv.writer(open('accessionsUdfs.csv', 'w'))
 f.writerow(udfsHeader)
 
-for id in ids:
-    print(id)
-    endpoint = '/repositories/'+repository+'/accessions/'+str(id)
+for a_id in ids:
+    print(a_id)
+    endpoint = '/repositories/'+repository+'/accessions/'+str(a_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     title = output['title']
     uri = output['uri']
     accessionUdfs = []
     for udf in udfs:
-        try:
+        if output['user_defined'][udf]:
             keyValue = udf+'|'+output['user_defined'][udf]
-        except:
+        else:
             keyValue = udf+'|'
         accessionUdfs.append(keyValue)
     accessionUdfs.sort()

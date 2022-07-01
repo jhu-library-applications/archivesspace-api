@@ -35,10 +35,7 @@ csvfile = csv.DictReader(open(targetFile))
 for row in csvfile:
     subjectRecord = {}
     terms = []
-    term = {}
-    term['term'] = row['label']
-    term['term_type'] = row['type']
-    term['vocabulary'] = '/vocabularies/1'
+    term = {'term': row['label'], 'term_type': row['type'], 'vocabulary': '/vocabularies/1'}
     terms.append(term)
 
     subjectRecord['terms'] = terms

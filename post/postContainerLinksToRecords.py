@@ -14,7 +14,7 @@ else:
     print('Editing Development')
 
 targetFile = input('Enter file name: ')
-targetRecord = input('Enter record type and id (e.g. \'accessions/2049\'): ')
+targetRecord = input('Enter record type and resource_id (e.g. \'accessions/2049\'): ')
 
 baseURL = secrets.baseURL
 user = secrets.user
@@ -36,13 +36,9 @@ instanceArray = asRecord['instances']
 for row in csv:
     uri = row['uri']
     print(uri)
-    top_container = {}
-    top_container['ref'] = uri
-    sub_container = {}
-    sub_container['top_container'] = top_container
-    instance = {}
-    instance['sub_container'] = sub_container
-    instance['instance_type'] = 'mixed_materials'
+    top_container = {'ref': uri}
+    sub_container = {'top_container': top_container}
+    instance = {'sub_container': sub_container, 'instance_type': 'mixed_materials'}
     instanceArray.append(instance)
 asRecord['instances'] = instanceArray
 f2 = open(targetRecord+'asRecordModified.json', 'w')

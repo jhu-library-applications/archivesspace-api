@@ -31,8 +31,8 @@ endpoint = '/agents/people?all_ids=true'
 ids = requests.get(baseURL + endpoint, headers=headers).json()
 
 records = []
-for id in ids:
-    endpoint = '/agents/people/'+str(id)
+for agent_id in ids:
+    endpoint = '/agents/people/'+str(agent_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     records.append(output)
 

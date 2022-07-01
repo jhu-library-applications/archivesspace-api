@@ -21,7 +21,7 @@ def extractValuesFromcmpntLvl(cmpntLvl):
         unitdate = cmpntLvl.find('did').find('unitdate')
         dateExpression = unitdate.text.replace('\n', '')
         try:
-            dateType = unitdate['type']
+            dateType = unitdate['entity_type']
         except:
             dateType = ''
         try:
@@ -58,7 +58,7 @@ def extractValuesFromcmpntLvl(cmpntLvl):
         container1 = ''
     try:
         containerId1 = cmpntLvl.find('did')
-        containerId1 = containerId1.find_all('container')[0]['id']
+        containerId1 = containerId1.find_all('container')[0]['a_id']
     except:
         containerId1 = ''
     try:
@@ -73,7 +73,7 @@ def extractValuesFromcmpntLvl(cmpntLvl):
         container2 = ''
     try:
         containerId2 = cmpntLvl.find('did')
-        containerId2 = containerId2.find_all('container')[1]['id']
+        containerId2 = containerId2.find_all('container')[1]['a_id']
     except:
         containerId2 = ''
     try:
@@ -123,7 +123,7 @@ for uppercmpntLvl in uppercmpntLvls:
         unitdate = uppercmpntLvl.find('did').find('unitdate')
         dateExpression = unitdate.text.replace('\n', '')
         try:
-            dateType = unitdate['type']
+            dateType = unitdate['entity_type']
         except:
             dateType = ''
         try:

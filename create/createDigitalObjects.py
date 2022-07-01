@@ -13,12 +13,12 @@ else:
     filename = input('Enter filename (including \'.csv\'): ')
 
 
-def addToDict(dict, key, value):
+def add_to_dict(dict_name, key, value):
     try:
         value = row[value]
         if value:
             value = value.strip()
-            dict[key] = value
+            dict_name[key] = value
     except KeyError:
         pass
 
@@ -41,15 +41,15 @@ with open(filename) as metadata:
         file_version['jsonmodel_type'] = 'file_version'
         file_version['is_representative'] = False
         file_version['publish'] = True
-        addToDict(date, 'expression', 'expression')
-        addToDict(date, 'begin', 'begin')
-        addToDict(date, 'end', 'end')
-        addToDict(date, 'date_type', 'date_type')
-        addToDict(date, 'label', 'label')
-        addToDict(file_version, 'file_uri', 'file_uri')
-        addToDict(json_file, 'title', 'title')
-        addToDict(json_file, 'digital_object_id', 'file_uri')
-        addToDict(linked_instance, 'ref', 'record_uri')
+        add_to_dict(date, 'expression', 'expression')
+        add_to_dict(date, 'begin', 'begin')
+        add_to_dict(date, 'end', 'end')
+        add_to_dict(date, 'date_type', 'date_type')
+        add_to_dict(date, 'label', 'label')
+        add_to_dict(file_version, 'file_uri', 'file_uri')
+        add_to_dict(json_file, 'title', 'title')
+        add_to_dict(json_file, 'digital_object_id', 'file_uri')
+        add_to_dict(linked_instance, 'ref', 'record_uri')
         identifier = row['record_uri']
         identifier = identifier.replace('/repositories/3/archival_objects/', 'do_')
         if date:

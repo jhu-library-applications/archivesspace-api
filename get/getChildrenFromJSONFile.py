@@ -4,7 +4,7 @@ import argparse
 from datetime import datetime
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', '--file', help='filename to retreive')
+parser.add_argument('-f', '--file', help='filename to retrieve')
 args = parser.parse_args()
 
 if args.file:
@@ -15,16 +15,16 @@ else:
 with open(filename) as f:
     data = json.load(f)
     series = data['children']
-    object = {}
+    child_dict = {}
     for child in series:
         for k, v in child.items():
-            if k == 'id':
+            if k == 'a_id':
                 if v == 151002:
-                    object.update(child)
-    children = object.get('children')
+                    child_dict.update(child)
+    children = child_dict.get('children')
     print(children)
 
 
 df_1 = pd.DataFrame.from_dict(children)
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
-df_1.to_csv(path_or_buf='calcuateChildren_'+dt+'.csv', index=False)
+df_1.to_csv(path_or_buf='calculateChildren_'+dt+'.csv', index=False)

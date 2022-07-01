@@ -15,7 +15,7 @@ else:
     print('Editing Development')
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', '--file', help='file_name to retreive')
+parser.add_argument('-f', '--file', help='file_name to retrieve')
 args = parser.parse_args()
 
 if args.file:
@@ -33,14 +33,14 @@ df_1 = pd.read_csv(filename)
 itemList = df_1.record_uri.to_list()
 
 
-def collectProperty(dictionary, property, name=None):
+def collect_property(dictionary, ao_property, name=None):
     if dictionary is not None:
-        value = dictionary.get(property)
+        value = dictionary.get(ao_property)
         if value is not None:
             if name:
                 tiny_dict[name] = value
             else:
-                tiny_dict[property] = value
+                tiny_dict[ao_property] = value
 
 
 auth = requests.post(baseURL+'/users/'+user+'/login?password='+password,
@@ -55,23 +55,23 @@ for count, item in enumerate(itemList):
     print(count)
     print(baseURL+item)
     output = requests.get(baseURL+item, headers=headers, verify=verify).json()
-    collectProperty(output, 'uri')
-    collectProperty(output, 'title')
+    collect_property(output, 'uri')
+    collect_property(output, 'title')
     dates = output.get('dates')
     for date in dates:
-        collectProperty(date, 'expression')
-        collectProperty(date, 'begin')
-        collectProperty(date, 'end')
-        collectProperty(date, 'date_type')
-        collectProperty(date, 'label')
+        collect_property(date, 'expression')
+        collect_property(date, 'begin')
+        collect_property(date, 'end')
+        collect_property(date, 'date_type')
+        collect_property(date, 'label')
     instances = output.get('instances')
-    for item in instances:
-        sub_container = item.get('sub_container')
+    for instance in instances:
+        sub_container = instance.get('sub_container')
         if sub_container:
             top_container = sub_container.get('top_container')
-            collectProperty(top_container, 'ref', 'container')
-        digital_object = item.get('digital_object')
-        collectProperty(digital_object, 'ref', 'digital')
+            collect_property(top_container, 'ref', 'container')
+        digital_object = instance.get('digital_object')
+        collect_property(digital_object, 'ref', 'digital')
     all_items.append(tiny_dict)
 
 

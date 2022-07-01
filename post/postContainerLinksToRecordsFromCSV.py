@@ -35,13 +35,9 @@ for row in csvfile:
     link = baseURL+resourceUri
     asRecord = requests.get(link, headers=headers).json()
     instanceArray = asRecord['instances']
-    top_container = {}
-    top_container['ref'] = uri
-    sub_container = {}
-    sub_container['top_container'] = top_container
-    instance = {}
-    instance['sub_container'] = sub_container
-    instance['instance_type'] = 'mixed_materials'
+    top_container = {'ref': uri}
+    sub_container = {'top_container': top_container}
+    instance = {'sub_container': sub_container, 'instance_type': 'mixed_materials'}
     instanceArray.append(instance)
     asRecord['instances'] = instanceArray
     asRecord = json.dumps(asRecord)

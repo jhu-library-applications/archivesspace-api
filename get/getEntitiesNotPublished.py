@@ -5,14 +5,14 @@ import pandas as pd
 from datetime import datetime
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-e', '--entity', help='options: people, corporate_entites, families')
+parser.add_argument('-e', '--entity', help='options: people, corporate_entities, families')
 args = parser.parse_args()
 
 if args.entity:
     type_entity = args.entity
     print(type_entity)
 else:
-    type_entity = input('options: people, corporate_entites, families: ')
+    type_entity = input('options: people, corporate_entities, families: ')
 
 baseURL = secrets.baseURL
 user = secrets.user
@@ -31,10 +31,10 @@ ids = requests.get(baseURL + endpoint, headers=headers).json()
 
 total = len(ids)
 allItems = []
-for id in ids:
-    print('id', id, total, 'records remaining')
+for e_id in ids:
+    print('a_id', e_id, total, 'records remaining')
     total = total - 1
-    endpoint = '/agents/'+type_entity+'/'+str(id)
+    endpoint = '/agents/'+type_entity+'/'+str(e_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     idDict = {}
     uri = output['uri']

@@ -1,4 +1,3 @@
-import json
 import requests
 import secrets
 import time
@@ -17,13 +16,13 @@ else:
 startTime = time.time()
 
 
-def findKey(d, key):
+def find_key(d, key):
     if key in d:
         yield d[key]
     for k in d:
         if isinstance(d[k], list) and k == 'children':
             for i in d[k]:
-                for j in findKey(i, key):
+                for j in find_key(i, key):
                     yield j
 
 
@@ -45,35 +44,35 @@ f = csv.writer(open('archivalObjectCountByResource.csv', 'w'))
 f.writerow(['title']+['bib']+['uri']+['id_0']+['id_1']+['id_2']+['id_3']+['aoCount'])
 
 records = []
-for id in ids:
-    print(id)
-    endpoint = '/repositories/'+repository+'/resources/'+str(id)
+for resource_id in ids:
+    print(resource_id)
+    endpoint = '/repositories/'+repository+'/resources/'+str(resource_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     title = output['title']
     uri = output['uri']
     id0 = output['id_0']
     try:
         bib = output['user_defined']['real_1']
-    except:
+    except KeyError:
         bib = ''
     try:
         id1 = output['id_1']
-    except:
+    except KeyError:
         id1 = ''
     try:
         id2 = output['id_2']
-    except:
+    except KeyError:
         id2 = ''
     try:
         id3 = output['id_3']
-    except:
+    except KeyError:
         id3 = ''
 
-    treeEndpoint = '/repositories/'+repository+'/resources/'+str(id)+'/tree'
+    treeEndpoint = '/repositories/'+repository+'/resources/'+str(resource_id)+'/tree'
 
     output2 = requests.get(baseURL + treeEndpoint, headers=headers).json()
     archivalObjects = []
-    for value in findKey(output2, 'record_uri'):
+    for value in find_key(output2, 'record_uri'):
         print(value)
         if 'archival_objects' in value:
             archivalObjects.append(value)

@@ -29,7 +29,7 @@ verify = secrets.verify
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', '--file', help='filename to retreive')
+parser.add_argument('-f', '--file', help='filename to retrieve')
 args = parser.parse_args()
 
 if args.file:
@@ -53,21 +53,21 @@ for count, row in df.iterrows():
     uri = row['uri']
     print(count, archival_object)
     itemLog['archival_object'] = archival_object
-    aobject = requests.get(baseURL+archival_object, headers=headers,
-                           verify=verify).json()
+    ao_object = requests.get(baseURL + archival_object, headers=headers,
+                             verify=verify).json()
     instance = {'instance_type': 'digital_object', 'jsonmodel_type': 'instance',
                 'is_representative': False,
                 'digital_object': {'ref': uri}}
-    list = aobject.get('instances')
-    if list:
-        list.append(instance)
-        aobject['instances'] = list
+    instance_list = ao_object.get('instances')
+    if instance_list:
+        instance_list.append(instance)
+        ao_object['instances'] = instance_list
     else:
-        aobject['instances'] = [instance]
-    print(aobject)
-    aobject = json.dumps(aobject)
-    post = requests.post(baseURL+archival_object, headers=headers,
-                         verify=verify, data=aobject).json()
+        ao_object['instances'] = [instance]
+    print(ao_object)
+    ao_object = json.dumps(ao_object)
+    post = requests.post(baseURL + archival_object, headers=headers,
+                         verify=verify, data=ao_object).json()
     itemLog['post'] = post
     log.append(itemLog)
 

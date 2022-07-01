@@ -1,4 +1,3 @@
-import json
 import requests
 import secrets
 import time
@@ -147,7 +146,7 @@ with open(filename, encoding='utf-8') as changesFile:
                 for y in range(10):
                     subnote = note['subnotes'][y]['content']
                     try:
-                        note_name = note['type']
+                        note_name = note['entity_type']
                     except:
                         note_name = ''
                     if keyword in subnote:

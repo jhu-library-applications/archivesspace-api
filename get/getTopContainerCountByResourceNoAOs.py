@@ -36,8 +36,8 @@ f2.writerow(['resourceUri']+['topContainerUri'])
 
 uniqueTopContainers = []
 topContainerLinks = []
-for id in ids:
-    endpoint = '/repositories/'+repository+'/resources/'+str(id)
+for resource_id in ids:
+    endpoint = '/repositories/'+repository+'/resources/'+str(resource_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     topContainersByResource = []
     title = output['title']
@@ -45,15 +45,15 @@ for id in ids:
     id0 = output['id_0']
     try:
         id1 = output['id_1']
-    except:
+    except KeyError:
         id1 = ''
     try:
         id2 = output['id_2']
-    except:
+    except KeyError:
         id2 = ''
     try:
         id3 = output['id_3']
-    except:
+    except KeyError:
         id3 = ''
     try:
         instances = output['instances']
@@ -61,9 +61,9 @@ for id in ids:
             try:
                 topContainer = instance['sub_container']['top_container']['ref']
                 topContainersByResource.append(topContainer)
-            except:
+            except KeyError:
                 print(id, 'No top containers')
-    except:
+    except KeyError:
         pass
     for topContainer in topContainersByResource:
         topContainerLink = str(id) + '|'+topContainer
@@ -84,12 +84,12 @@ for topContainer in uniqueTopContainers:
     search = requests.get(baseURL+topContainer, headers=headers).json()
     try:
         indicator = search['indicator']
-    except:
+    except KeyError:
         indicator = ''
 
     try:
         barcode = search['barcode']
-    except:
+    except KeyError:
         barcode = ''
     f3.writerow([topContainer]+[indicator]+[barcode])
 

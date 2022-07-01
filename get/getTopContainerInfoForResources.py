@@ -35,11 +35,11 @@ itemList = list(itemList)
 print(itemList)
 
 
-def collectValue(dictionary, property):
+def collect_value(dictionary, tc_property):
     if dictionary:
-        value = dictionary.get(property)
+        value = dictionary.get(tc_property)
         if value:
-            tiny_dict[property] = value
+            tiny_dict[tc_property] = value
 
 
 auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
@@ -53,11 +53,11 @@ for count, item in enumerate(itemList):
     print(baseURL+item)
     print(count)
     output = requests.get(baseURL+item, headers=headers).json()
-    collectValue(output, 'barcode')
-    collectValue(output, 'type')
-    collectValue(output, 'indicator')
-    collectValue(output, 'display_string')
-    collectValue(output, 'uri')
+    collect_value(output, 'barcode')
+    collect_value(output, 'entity_type')
+    collect_value(output, 'indicator')
+    collect_value(output, 'display_string')
+    collect_value(output, 'uri')
     all_items.append(tiny_dict)
 
 

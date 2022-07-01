@@ -31,9 +31,9 @@ ids = requests.get(baseURL + endpoint, headers=headers).json()
 print(len(ids))
 
 records = []
-for id in ids:
+for tc_id in ids:
     print(id)
-    endpoint = '/repositories/'+repository+'/top_containers/'+str(id)
+    endpoint = '/repositories/'+repository+'/top_containers/'+str(tc_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     records.append(output)
 

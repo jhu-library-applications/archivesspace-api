@@ -1,7 +1,7 @@
 # This script works to create instances (consisting of top_containers) from a
 # CSV file. The CSV file should have 2 columns, indicator and barcode.
 # This file must be stored in the directory of the filePath variable, below.
-# The script will prompt you first for the CSV filename, and then for the resource or accession to attach the containers to.
+# The script will prompt you for the CSV filename, and then for the resource or accession to attach the containers to.
 
 import json
 import requests
@@ -21,7 +21,7 @@ else:
 filePath = '[Enter File Path]'
 
 targetFile = input('Enter file name: ')
-targetRecord = input('Enter record type and id (e.g. \'accessions/2049\'): ')
+targetRecord = input('Enter record type and resource_id (e.g. \'accessions/2049\'): ')
 
 baseURL = secrets.baseURL
 user = secrets.user
@@ -36,9 +36,7 @@ csv = csv.DictReader(open(filePath+targetFile))
 
 containerList = []
 for row in csv:
-    containerRecord = {}
-    containerRecord['barcode'] = row['barcode']
-    containerRecord['indicator'] = row['indicator']
+    containerRecord = {'barcode': row['barcode'], 'indicator': row['indicator']}
     containerRecord = json.dumps(containerRecord)
     post = requests.post(baseURL+'/repositories/'+repository+'/top_containers',
                          headers=headers, data=containerRecord).json()
@@ -50,13 +48,9 @@ asRecord = requests.get(baseURL+'/repositories/'+repository+'/'+targetRecord,
 instanceArray = asRecord['instances']
 
 for i in range(0, len(containerList)):
-    top_container = {}
-    top_container['ref'] = containerList[i]
-    sub_container = {}
-    sub_container['top_container'] = top_container
-    instance = {}
-    instance['sub_container'] = sub_container
-    instance['instance_type'] = 'mixed_materials'
+    top_container = {'ref': containerList[i]}
+    sub_container = {'top_container': top_container}
+    instance = {'sub_container': sub_container, 'instance_type': 'mixed_materials'}
     instanceArray.append(instance)
 
 asRecord['instances'] = instanceArray

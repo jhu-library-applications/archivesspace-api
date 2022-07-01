@@ -21,21 +21,20 @@ user = secrets.user
 password = secrets.password
 repository = secrets.repository
 
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+auth = requests.post(baseURL + '/users/' + user + '/login?password=' + password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 print('authenticated')
 
-endpoint = '/repositories/'+repository+'/archival_objects?all_ids=true'
+endpoint = '/repositories/' + repository + '/archival_objects?all_ids=true'
 
 ids = requests.get(baseURL + endpoint, headers=headers).json()
 print(len(ids))
 
 allItems = []
-for id in ids:
-    print(id)
-    idDict = {}
-    endpoint = '/repositories/'+repository+'/archival_objects/'+str(id)
+for r_id in ids:
+    print(r_id)
+    endpoint = '/repositories/' + repository + '/archival_objects/' + str(id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     title = output.get('title')
     uri = output.get('uri')
@@ -46,8 +45,7 @@ for id in ids:
 df = pd.DataFrame.from_dict(allItems)
 print(df.head(15))
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
-df.to_csv('aspaceResourcesBib_'+dt+'.csv', index=False)
-
+df.to_csv('aspaceResourcesBib_' + dt + '.csv', index=False)
 
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)

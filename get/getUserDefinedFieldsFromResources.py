@@ -35,7 +35,7 @@ f.writerow(['title']+['uri']+['bibnum']+['accessionAcknowledged']+['selector']+[
 total_resources = len(ids)
 total_accessions = len(ids)
 for id in ids:
-    print('id', id, total_resources, 'resource records remaining')
+    print('a_id', id, total_resources, 'resource records remaining')
     total_resources = total_resources - 1
     endpoint = '/repositories/'+repository+'/resources/'+str(id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
@@ -89,7 +89,7 @@ for id in ids:
         f.writerow([title]+[uri]+[bibnum]+[accessionAcknowledged]+[selector]+[assignedTo]+[appraisalLegacy]+[custodialHistory]+[electronicRecordLog]+[relatedMaterialsNote]+[archiveItSeeds]+[appraisal]+[accessionStatus])
 
 for id in ids:
-    print('id', id, total_accessions, 'accession records remaining')
+    print('a_id', id, total_accessions, 'accession records remaining')
     total_accessions = total_accessions - 1
     endpoint = '/repositories/'+repository+'/accessions/'+str(id)
     output = requests.get(baseURL + endpoint, headers=headers).json()

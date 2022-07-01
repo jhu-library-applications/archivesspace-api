@@ -38,12 +38,8 @@ csvfile = csv.DictReader(open(targetFile))
 for row in csvfile:
     agentRecord = {}
     names = []
-    name = {}
-    name['family_name'] = row['sortName']
-    name['sort_name'] = row['sortName']
-    name['jsonmodel_type'] = 'name_family'
-    name['name_order'] = 'direct'
-    name['rules'] = 'rda'
+    name = {'family_name': row['sortName'], 'sort_name': row['sortName'], 'jsonmodel_type': 'name_family',
+            'name_order': 'direct', 'rules': 'rda'}
     try:
         name['dates'] = row['dates']
     except KeyError:
@@ -55,9 +51,7 @@ for row in csvfile:
     names.append(name)
     if row['dates'] != '':
         dates = []
-        date = {}
-        date['label'] = 'existence'
-        date['jsonmodel_type'] = 'date'
+        date = {'label': 'existence', 'jsonmodel_type': 'date'}
         if row['begin'] != '' and row['end'] != '':
             date['begin'] = row['begin']
             date['end'] = row['end']

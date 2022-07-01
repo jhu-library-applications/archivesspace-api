@@ -42,8 +42,7 @@ for row in urisBibs:
         record['user_defined']['real_1'] = bibNum
         existingValue = 'Y'
     except:
-        value = {}
-        value['real_1'] = row['bibNum']
+        value = {'real_1': row['bibNum']}
         record['user_defined'] = value
         print(value)
         existingValue = 'N'

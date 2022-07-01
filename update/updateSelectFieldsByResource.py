@@ -50,36 +50,37 @@ with open(filename, encoding='utf-8') as changesFile:
             output = requests.get(baseURL + endpoint, headers=headers).json()
         except:
             continue
-            print('{} currently unavaible. Check to see if it exists'.format(endpoint))
+
+            print('{} currently unavailable. Check to see if it exists'.format(endpoint))
             print('')
             f.writerow([endpoint]+['COULD NOT FIND RESOURCE'])
         try:
             title = output['title']
-        except:
+        except KeyError:
             title = ''
         try:
             uri = output['uri'].strip()
-        except:
+        except KeyError:
             uri = ''
         try:
             finding_aid_title = output['finding_aid_title']
-        except:
+        except KeyError:
             finding_aid_title = ''
         try:
             ead_id = output['ead_id']
-        except:
+        except KeyError:
             ead_id = ''
         try:
             ead_url = output['ead_location']
-        except:
+        except KeyError:
             ead_url = ''
         try:
             finding_aid_language = output['finding_aid_language']
-        except:
+        except KeyError:
             finding_aid_language = ''
         try:
             finding_aid_rules = output['finding_aid_description_rules']
-        except:
+        except KeyError:
             finding_aid_rules = ''
         f.writerow([title]+[uri]+[finding_aid_title]+[ead_id]+[ead_url]+[finding_aid_language]+[finding_aid_rules])
         print([title]+[uri]+[finding_aid_title]+[ead_id]+[ead_url]+[finding_aid_language]+[finding_aid_rules])

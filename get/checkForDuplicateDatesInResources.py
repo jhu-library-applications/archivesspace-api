@@ -31,11 +31,11 @@ ids = requests.get(baseURL+endpoint, headers=headers).json()
 records = []
 f = csv.writer(open('duplicateBeginEndDates.csv', 'w'))
 f2 = csv.writer(open('asDates.csv', 'w'))
-f.writerow(['uri']+['begin']+['end']+['expression']+['type'])
-f2.writerow(['uri']+['begin']+['end']+['expression']+['type'])
+f.writerow(['uri']+['begin']+['end']+['expression']+['entity_type'])
+f2.writerow(['uri']+['begin']+['end']+['expression']+['entity_type'])
 counter = 0
-for id in ids:
-    endpoint = '/repositories/'+repository+'/resources/'+str(id)
+for r_id in ids:
+    endpoint = '/repositories/'+repository+'/resources/'+str(r_id)
     output = requests.get(baseURL+endpoint, headers=headers).json()
     for date in output['dates']:
         counter = counter + 1

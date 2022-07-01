@@ -3,7 +3,7 @@ import secrets
 import time
 import csv
 
-secretsVersion = input('To edit production server, ente secrets file name: ')
+secretsVersion = input('To edit production server, enter secrets file name: ')
 if secretsVersion != '':
     try:
         secrets = __import__(secretsVersion)
@@ -41,37 +41,37 @@ f3.writerow(['topContainer']+['indicator']+['barcode'])
 total = len(ids)
 topContainerLinks = []
 uniqueTopContainers = []
-for id in ids:
+for resource_id in ids:
     resourceTopContainers = []
-    print('id', id, total, 'records remaining')
+    print('a_id', resource_id, total, 'records remaining')
     total = total - 1
-    endpoint = '/repositories/'+repository+'/resources/'+str(id)
+    endpoint = '/repositories/'+repository+'/resources/'+str(resource_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     title = output['title']
     print(title)
     uri = output['uri']
     try:
         bib = output['user_defined']['real_1']
-    except:
+    except KeyError:
         bib = ''
     print(bib)
     id0 = output['id_0']
     try:
         id1 = output['id_1']
-    except:
+    except KeyError:
         id1 = ''
     try:
         id2 = output['id_2']
-    except:
+    except KeyError:
         id2 = ''
     try:
         id3 = output['id_3']
-    except:
+    except KeyError:
         id3 = ''
     page = 1
     resultsPage = ''
     results = []
-    while resultsPage != []:
+    while resultsPage:
         print(page)
         payload = {'page': page, 'page_size': '100', 'root_record': endpoint}
         search = requests.get(baseURL+'/search', headers=headers, params=payload).json()
@@ -88,7 +88,7 @@ for id in ids:
                     resourceTopContainers.append(topContainer)
                 if topContainer not in uniqueTopContainers:
                     uniqueTopContainers.append(topContainer)
-                topContainerLink = str(id)+'|'+topContainer
+                topContainerLink = str(resource_id) + '|' + topContainer
                 if topContainerLink not in topContainerLinks:
                     topContainerLinks.append(topContainerLink)
         except:
@@ -107,12 +107,12 @@ for topContainer in uniqueTopContainers:
     search = requests.get(baseURL+topContainer, headers=headers).json()
     try:
         indicator = search['indicator']
-    except:
+    except KeyError:
         indicator = ''
 
     try:
         barcode = search['barcode']
-    except:
+    except KeyError:
         barcode = ''
     f3.writerow([topContainer]+[indicator]+[barcode])
 

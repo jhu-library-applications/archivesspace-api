@@ -32,9 +32,9 @@ ids = requests.get(baseURL + endpoint, headers=headers).json()
 print(len(ids))
 
 allItems = []
-for id in ids:
-    print(id)
-    endpoint = '/agents/people/'+str(id)
+for a_id in ids:
+    print(a_id)
+    endpoint = '/agents/people/'+str(a_id)
     output = requests.get(baseURL+endpoint, headers=headers).json()
     idDict = {}
     uri = output['uri']

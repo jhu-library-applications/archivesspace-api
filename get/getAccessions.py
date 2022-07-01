@@ -30,8 +30,8 @@ endpoint = '/repositories/'+repository+'/accessions?all_ids=true'
 ids = requests.get(baseURL + endpoint, headers=headers).json()
 
 records = []
-for id in ids:
-    endpoint = '/repositories/'+repository+'/accessions/'+str(id)
+for a_id in ids:
+    endpoint = '/repositories/'+repository+'/accessions/'+str(a_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     records.append(output)
 

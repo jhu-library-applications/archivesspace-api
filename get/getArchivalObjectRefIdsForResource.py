@@ -17,13 +17,13 @@ else:
 startTime = time.time()
 
 
-def findKey(d, key):
+def find_key(d, key):
     if key in d:
         yield d[key]
     for k in d:
         if isinstance(d[k], list) and k == 'children':
             for i in d[k]:
-                for j in findKey(i, key):
+                for j in find_key(i, key):
                     yield j
 
 
@@ -32,18 +32,18 @@ user = secrets.user
 password = secrets.password
 repository = secrets.repository
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(baseURL + '/users/' + user + '/login?password=' + password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
 resourceID = input('Enter resource ID: ')
 
-endpoint = '/repositories/'+repository+'/resources/'+resourceID+'/tree'
+endpoint = '/repositories/' + repository + '/resources/' + resourceID + '/tree'
 
 output = requests.get(baseURL + endpoint, headers=headers).json()
 print(output)
 archivalObjects = []
-for value in findKey(output, 'record_uri'):
+for value in find_key(output, 'record_uri'):
     print(value)
     if 'archival_objects' in value:
         archivalObjects.append(value)
@@ -71,12 +71,10 @@ for archivalObject in archivalObjects:
         aoDict['top_container'] = top_container.get('ref')
     objectList.append(aoDict)
 
-
 df = pd.DataFrame.from_dict(objectList)
 print(df.head(15))
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
-df.to_csv(path_or_buf='RefIds'+resourceID+'_'+dt+'.csv', index=False)
-
+df.to_csv(path_or_buf='RefIds' + resourceID + '_' + dt + '.csv', index=False)
 
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)

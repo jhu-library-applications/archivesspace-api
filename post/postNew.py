@@ -18,7 +18,7 @@ else:
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', help='JSON file of records to post')
-parser.add_argument('-e', '--endpoint', help='Endpoint for record type')
+parser.add_argument('-e', '--endpoint', help='Endpoint for record entity_type')
 args = parser.parse_args()
 
 if args.file:

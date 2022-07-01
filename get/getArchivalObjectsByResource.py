@@ -16,13 +16,13 @@ else:
 startTime = time.time()
 
 
-def findKey(d, key):
+def find_key(d, key):
     if key in d:
         yield d[key]
     for k in d:
         if isinstance(d[k], list) and k == 'children':
             for i in d[k]:
-                for j in findKey(i, key):
+                for j in find_key(i, key):
                     yield j
 
 
@@ -41,7 +41,7 @@ endpoint = '/repositories/'+repository+'/resources/'+resourceID+'/tree'
 
 output = requests.get(baseURL + endpoint, headers=headers).json()
 archivalObjects = []
-for value in findKey(output, 'record_uri'):
+for value in find_key(output, 'record_uri'):
     print(value)
     if 'archival_objects' in value:
         archivalObjects.append(value)

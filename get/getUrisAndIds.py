@@ -31,7 +31,7 @@ ids = requests.get(baseURL+endpoint, headers=headers).json()
 total = len(ids)
 allItems = []
 for id in ids:
-    print('id', id, total, recordType, ' remaining')
+    print('a_id', id, total, recordType, ' remaining')
     total = total - 1
     idDict = {}
     endpoint = '/repositories/'+repository+'/'+recordType+'/'+str(id)

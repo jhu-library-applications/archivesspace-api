@@ -31,8 +31,8 @@ ids = requests.get(baseURL + endpoint, headers=headers).json()
 
 total = len(ids)
 allItems = []
-for id in ids:
-    print('id', id, total, 'resources remaining')
+for r_id in ids:
+    print('a_id', r_id, total, 'resources remaining')
     total = total - 1
     endpoint = '/repositories/'+repository+'/resources/'+str(id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
@@ -43,10 +43,10 @@ for id in ids:
     idDict['uri'] = uri
     date_modified = output['user_mtime']
     publish = output['publish']
-    suppresed = output['suppressed']
+    suppressed = output['suppressed']
     idDict['date_modified'] = date_modified
     idDict['publish'] = publish
-    idDict['supressed'] = suppresed
+    idDict['suppressed'] = suppressed
     user_defined = output.get('user_defined')
     if user_defined:
         bibnum = user_defined.get('real_1')

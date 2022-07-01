@@ -38,8 +38,8 @@ print(len(ids))
 # f.writerow(['uri'])
 # doAos = []
 #
-# for id in ids:
-#     endpoint = '/repositories/'+repository+'/archival_objects/'+str(id)
+# for a_id in ids:
+#     endpoint = '/repositories/'+repository+'/archival_objects/'+str(a_id)
 #     output = requests.get(baseURL + endpoint, headers=headers).json()
 #     try:
 #         dates = output['dates']
@@ -77,28 +77,28 @@ for doAo in doAos:
         for aoDate in aoDates:
             try:
                 aoBegin = aoDate['begin']
-            except:
+            except KeyError:
                 aoBegin = ''
             try:
                 aoEnd = aoDate['end']
-            except:
+            except KeyError:
                 aoEnd = ''
             try:
                 aoExpression = aoDate['expression']
-            except:
+            except KeyError:
                 aoExpression = ''
             try:
                 aoLabel = aoDate['label']
-            except:
+            except KeyError:
                 aoLabel = ''
-    except:
+    except KeyError:
         aoBegin = ''
         aoExpression = ''
         aoLabel = ''
         aoEnd = ''
     try:
         instances = aoOutput['instances']
-    except:
+    except KeyError:
         continue
     for instance in instances:
         if instance['instance_type'] == 'digital_object':
@@ -107,18 +107,14 @@ for doAo in doAos:
                 doOutput = requests.get(baseURL + str(doUri), headers=headers).json()
                 print('moving date from AO to DO')
                 doDates = doOutput['dates']
-                if doDates == []:
+                if not doDates:
                     print('no date', doDates)
                     doBegin = ''
                     doExpression = ''
                     doLabel = ''
                     doEnd = ''
                     doDates = []
-                    doDate = {}
-                    doDate['begin'] = aoBegin
-                    doDate['expression'] = aoExpression
-                    doDate['label'] = aoLabel
-                    doDate['date_type'] = 'single'
+                    doDate = {'begin': aoBegin, 'expression': aoExpression, 'label': aoLabel, 'date_type': 'single'}
                     if aoEnd != '':
                         doDate['end'] = aoEnd
                         doDate['date_type'] = 'range'
@@ -132,19 +128,19 @@ for doAo in doAos:
                     for doDate in doDates:
                         try:
                             doBegin = doDate['begin']
-                        except:
+                        except KeyError:
                             doBegin = ''
                         try:
                             doEnd = doDate['end']
-                        except:
+                        except KeyError:
                             doEnd = ''
                         try:
                             doExpression = doDate['expression']
-                        except:
+                        except KeyError:
                             doExpression = ''
                         try:
                             doLabel = doDate['label']
-                        except:
+                        except KeyError:
                             doLabel = ''
                         if aoBegin != '':
                             doDate['begin'] = aoBegin

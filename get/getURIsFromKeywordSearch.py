@@ -16,8 +16,11 @@ else:
 types = []
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-k', '--keyword', help='Keyword to retreive.')
-parser.add_argument('-t', '--type', choices=['accession', 'resource', 'subject', 'agent', 'location', 'archival_object'], help='What type of records do you want to search? Type out which of the following you want: accession, resource, subject, agent, location, archival_object. optional - if not provided, the script will ask for input')
+parser.add_argument('-k', '--keyword', help='Keyword to retrieve.')
+parser.add_argument('-t', '--entity_type', choices=['accession', 'resource', 'subject', 'agent', 'location', 'archival_object'],
+                    help='What entity_type of records do you want to search? Type out which of the following you want: '
+                         'accession, resource, subject, agent, location, archival_object. optional - if not provided, '
+                         'the script will ask for input')
 args = parser.parse_args()
 
 if args.keyword:
@@ -25,18 +28,19 @@ if args.keyword:
 else:
     keyword = input('Enter keyword to search: ')
 if args.type:
-    type = args.type
-    type = type.split(',')
-    for item in type:
+    etype = args.type
+    etype = etype.split(',')
+    for item in etype:
         item = item.strip()
-        item = '&type[]='+item
+        item = '&entity_type[]='+item
         types.append(item)
 else:
-    type = input('What type of records do you want to search? Type out which of the following you want in a list: accession, resource, subject, agent, location, archival_object. ')
-    type = type.split(',')
-    for item in type:
+    etype = input('What record entity_type do you want to search? Type out what you want in a list: '
+                  'accession, resource, subject, agent, location, archival_object. ')
+    etype = etype.split(',')
+    for item in etype:
         item = item.strip()
-        item = '&type[]='+item
+        item = '&entity_type[]='+item
         types.append(item)
 
 types = ''.join(types)

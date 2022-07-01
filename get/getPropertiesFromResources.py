@@ -30,11 +30,11 @@ endpoint = '/repositories/'+repository+'/resources?all_ids=true'
 ids = requests.get(baseURL + endpoint, headers=headers).json()
 
 f = csv.writer(open('resourceProperties.csv', 'w'))
-f.writerow(['title']+['uri']+['bibnum']+['type']+['value'])
+f.writerow(['title']+['uri']+['bibnum']+['entity_type']+['value'])
 
 total = len(ids)
 for id in ids:
-    print('id', id, total, 'records remaining')
+    print('a_id', id, total, 'records remaining')
     total = total - 1
     endpoint = '/repositories/'+repository+'/resources/'+str(id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
@@ -72,36 +72,36 @@ for id in ids:
         accessrestrict = ''
         relatedmaterial = ''
         try:
-            if note['type'] == 'abstract':
+            if note['entity_type'] == 'abstract':
                 abstract = note['content'][0]
 
                 f.writerow([title]+[uri]+[bibnum]+['abstract']+[abstract])
-            if note['type'] == 'scopecontent':
+            if note['entity_type'] == 'scopecontent':
                 scopecontentSubnotes = note['subnotes']
                 for subnote in scopecontentSubnotes:
                     scopecontent = scopecontent + subnote['content'] + ' '
                 f.writerow([title]+[uri]+[bibnum]+['scopecontent']+[scopecontent])
-            if note['type'] == 'acqinfo':
+            if note['entity_type'] == 'acqinfo':
                 acqinfoSubnotes = note['subnotes']
                 for subnote in acqinfoSubnotes:
                     acqinfo = acqinfo + subnote['content'] + ' '
                 f.writerow([title]+[uri]+[bibnum]+['acqinfo']+[acqinfo])
-            if note['type'] == 'custodhist':
+            if note['entity_type'] == 'custodhist':
                 custodhistSubnotes = note['subnotes']
                 for subnote in custodhistSubnotes:
                     custodhist = custodhist + subnote['content'] + ' '
                 f.writerow([title]+[uri]+[bibnum]+['custodhist']+[custodhist])
-            if note['type'] == 'bioghist':
+            if note['entity_type'] == 'bioghist':
                 bioghistSubnotes = note['subnotes']
                 for subnote in bioghistSubnotes:
                     bioghist = bioghist + subnote['content'] + ' '
                 f.writerow([title]+[uri]+[bibnum]+['bioghist']+[bioghist])
-            if note['type'] == 'accessrestrict':
+            if note['entity_type'] == 'accessrestrict':
                 accessrestrictSubnotes = note['subnotes']
                 for subnote in accessrestrictSubnotes:
                     accessrestrict = accessrestrict + subnote['content'] + ' '
                 f.writerow([title]+[uri]+[bibnum]+['accessrestrict']+[accessrestrict])
-            if note['type'] == 'relatedmaterial':
+            if note['entity_type'] == 'relatedmaterial':
                 relatedmaterialSubnotes = note['subnotes']
                 for subnote in relatedmaterialSubnotes:
                     relatedmaterial = relatedmaterial + subnote['content'] + ' '

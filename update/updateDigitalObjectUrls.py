@@ -52,9 +52,9 @@ dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
 f = csv.writer(open('doUrlEdits_'+dt+'.csv', 'w'))
 f.writerow(['endpoint']+['doPost'])
 
-for id in ids:
-    print(id)
-    endpoint = '/repositories/'+repository+'/digital_objects/'+str(id)
+for do_id in ids:
+    print(do_id)
+    endpoint = '/repositories/'+repository+'/digital_objects/'+str(do_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     originalOutput = output
     originalIdValue = output['digital_object_id']
@@ -72,7 +72,7 @@ for id in ids:
     output['file_versions'] = file_versions
     if (originalIdValue != editedIdValue) or (fileUriChange is True):
         output = json.dumps(output)
-        link = baseURL+'/repositories/'+repository+'/digital_objects/'+str(id)
+        link = baseURL+'/repositories/'+repository+'/digital_objects/'+str(do_id)
         doPost = requests.post(link, headers=headers, data=output).json()
         print(doPost)
         f.writerow([endpoint]+[doPost])

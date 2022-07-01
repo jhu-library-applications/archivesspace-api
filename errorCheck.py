@@ -29,11 +29,11 @@ for repo in repository:
     endpoint = '/repositories/'+repo+'/resources'
     ids = requests.get(baseURL+endpoint, headers=headers, verify=False).json()
     print(ids)
-    # for id in ids:
-    #     id = str(id)
-    #     endpoint = '/repositories/'+repo+'/resources/'+id
+    # for a_id in ids:
+    #     a_id = str(a_id)
+    #     endpoint = '/repositories/'+repo+'/resources/'+a_id
     #     output = requests.get(baseURL+endpoint, headers=headers, verify=False).json()
-    #     f = open(id+'_resources.json', 'w')
+    #     f = open(a_id+'_resources.json', 'w')
     #     results = (json.dump(output, f))
     #     f.close()
 

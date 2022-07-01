@@ -18,13 +18,13 @@ else:
 startTime = time.time()
 
 
-def findKey(d, key):
+def find_key(d, key):
     if key in d:
         yield d[key]
     for k in d:
         if isinstance(d[k], list) and k == 'children':
             for i in d[k]:
-                for j in findKey(i, key):
+                for j in find_key(i, key):
                     yield j
 
 
@@ -37,13 +37,13 @@ auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
-id = input('Enter resource ID: ')
+resource_id = input('Enter resource ID: ')
 
-treeEndpoint = '/repositories/'+repository+'/resources/'+str(id)+'/tree'
+treeEndpoint = '/repositories/'+repository+'/resources/'+str(resource_id)+'/tree'
 
 output = requests.get(baseURL + treeEndpoint, headers=headers).json()
 archivalObjects = []
-for value in findKey(output, 'record_uri'):
+for value in find_key(output, 'record_uri'):
     if 'archival_objects' in value:
         archivalObjects.append(value)
 print(archivalObjects)

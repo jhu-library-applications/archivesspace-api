@@ -38,12 +38,8 @@ csvfile = csv.DictReader(open(targetFile))
 for row in csvfile:
     agentRecord = {}
     names = []
-    name = {}
-    name['primary_name'] = row['primary']
-    name['sort_name'] = row['sortName']
-    name['jsonmodel_type'] = 'name_corporate_entity'
-    name['name_order'] = 'direct'
-    name['rules'] = 'rda'
+    name = {'primary_name': row['primary'], 'sort_name': row['sortName'], 'jsonmodel_type': 'name_corporate_entity',
+            'name_order': 'direct', 'rules': 'rda'}
     try:
         name['subordinate_name_1'] = row['subordinate_1']
     except KeyError:

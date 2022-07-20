@@ -25,7 +25,7 @@ if args.uri:
 else:
     uri = input('Enter handle (\'/repositories/3/resources/855\'): ')
 
-uri = '/repositories/3/resources/1534'
+uri = '/repositories/3/resources/606'
 baseURL = secrets.baseURL
 user = secrets.user
 password = secrets.password

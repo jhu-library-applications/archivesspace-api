@@ -20,14 +20,15 @@ baseURL = secrets.baseURL
 user = secrets.user
 password = secrets.password
 repository = secrets.repository
+verify = secrets.verify
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(baseURL+'/users/'+user+'/login?password='+password, verify=verify).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
 endpoint = '/repositories/'+repository+'/resources?all_ids=true'
 
-ids = requests.get(baseURL + endpoint, headers=headers).json()
+ids = requests.get(baseURL + endpoint, headers=headers, verify=verify).json()
 
 f = csv.writer(open('resourceProperties.csv', 'w'))
 f.writerow(['title']+['uri']+['bibnum']+['entity_type']+['value'])
@@ -37,7 +38,7 @@ for id in ids:
     print('a_id', id, total, 'records remaining')
     total = total - 1
     endpoint = '/repositories/'+repository+'/resources/'+str(id)
-    output = requests.get(baseURL + endpoint, headers=headers).json()
+    output = requests.get(baseURL + endpoint, headers=headers, verify=verify).json()
 
     title = output['title']
     uri = output['uri']
@@ -49,7 +50,7 @@ for id in ids:
         agents = output['linked_agents']
         for agent in agents:
             agentUri = agent['ref']
-            agentOutput = requests.get(baseURL + agentUri, headers=headers).json()
+            agentOutput = requests.get(baseURL + agentUri, headers=headers, verify=verify).json()
             agentName = agentOutput['title']
             f.writerow([title]+[uri]+[bibnum]+['name']+[agentName])
     except:
@@ -58,7 +59,7 @@ for id in ids:
         subjects = output['subjects']
         for subject in subjects:
             subjectUri = subject['ref']
-            subjectOutput = requests.get(baseURL + subjectUri, headers=headers).json()
+            subjectOutput = requests.get(baseURL + subjectUri, headers=headers, verify=verify).json()
             subjectName = subjectOutput['title']
             f.writerow([title]+[uri]+[bibnum]+['subject']+[subjectName])
     except:

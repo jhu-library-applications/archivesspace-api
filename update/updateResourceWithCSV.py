@@ -1,6 +1,6 @@
 import json
 import requests
-import secrets
+import secret
 import time
 import csv
 
@@ -37,9 +37,9 @@ def second_level_update(key, value_source, first_level):
 
 startTime = time.time()
 
-baseURL = secrets.baseURL
-user = secrets.user
-password = secrets.password
+baseURL = secret.baseURL
+user = secret.user
+password = secret.password
 
 auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
 session = auth["session"]

@@ -1,15 +1,15 @@
 import json
 import requests
-import secrets
+import secret
 import time
 import csv
 import argparse
 from datetime import datetime
 
-secretsVersion = input('To edit production server, enter secrets filename: ')
-if secretsVersion != '':
+secretVersion = input('To edit production server, enter secret filename: ')
+if secretVersion != '':
     try:
-        secrets = __import__(secretsVersion)
+        secret = __import__(secretVersion)
         print('Editing Production')
     except ImportError:
         print('Editing Development')
@@ -27,10 +27,10 @@ else:
 
 startTime = time.time()
 
-baseURL = secrets.baseURL
-user = secrets.user
-password = secrets.password
-repository = secrets.repository
+baseURL = secret.baseURL
+user = secret.user
+password = secret.password
+repository = secret.repository
 
 auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
 session = auth["session"]

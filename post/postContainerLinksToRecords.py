@@ -1,12 +1,12 @@
 import json
 import requests
-import secrets
+import secret
 import csv
 
-secretsVersion = input('To edit production server, enter secrets file: ')
-if secretsVersion != '':
+secretVersion = input('To edit production server, enter secret file: ')
+if secretVersion != '':
     try:
-        secrets = __import__(secretsVersion)
+        secret = __import__(secretVersion)
         print('Editing Production')
     except ImportError:
         print('Editing Development')
@@ -16,10 +16,10 @@ else:
 targetFile = input('Enter file name: ')
 targetRecord = input('Enter record type and resource_id (e.g. \'accessions/2049\'): ')
 
-baseURL = secrets.baseURL
-user = secrets.user
-password = secrets.password
-repository = secrets.repository
+baseURL = secret.baseURL
+user = secret.user
+password = secret.password
+repository = secret.repository
 
 auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]

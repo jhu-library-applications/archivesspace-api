@@ -1,5 +1,5 @@
 import requests
-import secrets
+import secret
 import argparse
 import pandas as pd
 from datetime import datetime
@@ -14,9 +14,9 @@ if args.entity:
 else:
     type_entity = input('options: people, corporate_entities, families: ')
 
-baseURL = secrets.baseURL
-user = secrets.user
-password = secrets.password
+baseURL = secret.baseURL
+user = secret.user
+password = secret.password
 print(baseURL + '/users/'+user)
 auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
 print(auth)

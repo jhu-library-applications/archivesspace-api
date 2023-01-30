@@ -3,29 +3,29 @@ import requests
 from datetime import datetime
 import time
 import argparse
-import secrets
+import secret
 import pandas as pd
 import urllib3
 import os
 
 startTime = time.time()
 
-secretsVersion = input('To edit production server, enter secrets filename: ')
-if secretsVersion != '':
+secretVersion = input('To edit production server, enter secret filename: ')
+if secretVersion != '':
     try:
-        secrets = __import__(secretsVersion)
+        secret = __import__(secretVersion)
         print('Editing Production')
     except ImportError:
         print('Editing Development')
 else:
     print('Editing Development')
 
-# import secrets
-baseURL = secrets.baseURL
-user = secrets.user
-password = secrets.password
-repo = secrets.repository
-verify = secrets.verify
+# import secret
+baseURL = secret.baseURL
+user = secret.user
+password = secret.password
+repo = secret.repository
+verify = secret.verify
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

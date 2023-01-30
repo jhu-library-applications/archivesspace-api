@@ -1,13 +1,13 @@
 import requests
-import secrets
+import secret
 import pandas as pd
 import argparse
 from datetime import datetime
 
-secretsVersion = input('To edit production server, enter secrets file name: ')
-if secretsVersion != '':
+secretVersion = input('To edit production server, enter secret file name: ')
+if secretVersion != '':
     try:
-        secrets = __import__(secretsVersion)
+        secret = __import__(secretVersion)
         print('Editing Production')
     except ImportError:
         print('Editing Development')
@@ -23,10 +23,10 @@ if args.file:
 else:
     filename = input('Enter file name as filename.csv: ')
 
-baseURL = secrets.baseURL
-user = secrets.user
-password = secrets.password
-repository = secrets.repository
+baseURL = secret.baseURL
+user = secret.user
+password = secret.password
+repository = secret.repository
 
 df_1 = pd.read_csv(filename)
 container = df_1.top_container.dropna()

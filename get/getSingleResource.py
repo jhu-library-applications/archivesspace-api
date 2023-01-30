@@ -2,12 +2,12 @@ import json
 import requests
 import argparse
 import urllib3
-import secrets
+import secret
 
-secretsVersion = input('To edit production server, enter secrets file name: ')
-if secretsVersion != '':
+secretVersion = input('To edit production server, enter secret file name: ')
+if secretVersion != '':
     try:
-        secrets = __import__(secretsVersion)
+        secret = __import__(secretVersion)
         print('Editing Production')
     except ImportError:
         print('Editing Development')
@@ -25,32 +25,22 @@ if args.uri:
 else:
     uri = input('Enter handle (\'/repositories/3/resources/855\'): ')
 
-uri = '/repositories/3/resources/606'
-baseURL = secrets.baseURL
-user = secrets.user
-password = secrets.password
-repository = secrets.repository
+uri = '/repositories/3/resources/1384'
 
-<<<<<<< Updated upstream
-auth = requests.post(baseURL + '/users/' + user + '/login?password=' + password).json()
-=======
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password, verify=False).json()
-print(auth)
->>>>>>> Stashed changes
+baseURL = secret.baseURL
+user = secret.user
+password = secret.password
+repository = secret.repository
+verify = secret.verify
+
+auth = requests.post(baseURL+'/users/'+user+'/login?password='+password, verify=verify).json()
 session = auth['session']
-print('Session: ' + session)
+print('Session: '+session)
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
-<<<<<<< Updated upstream
-print(baseURL + uri)
-output = requests.get(baseURL + uri, headers=headers).json()
-uri = uri.replace('/repositories/' + repository + '/', '').replace('/', '-')
-f = open(uri + '.json', 'w')
-=======
 print(baseURL+uri)
-output = requests.get(baseURL+uri, headers=headers, verify=False).json()
+output = requests.get(baseURL + uri, headers=headers, verify=verify).json()
 uri = uri.replace('/repositories/'+repository+'/', '').replace('/', '-')
 f = open(uri+'.json', 'w')
->>>>>>> Stashed changes
 results = (json.dump(output, f))
 f.close()

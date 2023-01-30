@@ -1,12 +1,12 @@
 import json
 import requests
-import secrets
+import secret
 import time
 
-secretsVersion = input('To edit production server, enter the name of the secrets file: ')
-if secretsVersion != '':
+secretVersion = input('To edit production server, enter the name of the secret file: ')
+if secretVersion != '':
     try:
-        secrets = __import__(secretsVersion)
+        secret = __import__(secretVersion)
         print('Editing Production')
     except ImportError:
         print('Editing Development')
@@ -26,10 +26,10 @@ def find_key(d, key):
                     yield j
 
 
-baseURL = secrets.baseURL
-user = secrets.user
-password = secrets.password
-repository = secrets.repository
+baseURL = secret.baseURL
+user = secret.user
+password = secret.password
+repository = secret.repository
 
 resourceID = input('Enter resource ID: ')
 

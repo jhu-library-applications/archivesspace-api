@@ -1,9 +1,19 @@
 import json
 import requests
 import time
-import csv
 import secret
+import pandas as pd
+import argparse
 from datetime import datetime
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--file')
+args = parser.parse_args()
+
+if args.file:
+    filename = args.file
+else:
+    filename = input('Enter filename (including \'.csv\'): ')
 
 secretVersion = input('To edit production server, enter secret filename: ')
 if secretVersion != '':
@@ -22,81 +32,108 @@ user = secret.user
 password = secret.password
 repository = secret.repository
 
-targetFile = input('Enter file name: ')
-
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+# Authenticate user information for ArchivesSpace.
+auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
 session = auth['session']
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
-f = csv.writer(open('postNewPersonalAgents'+datetime.now().strftime('%Y-%m-%d %H.%M.%S')+'.csv', 'w'))
-f.writerow(['sortName']+['uri'])
 
-csvfile = csv.DictReader(open(targetFile))
+def add_field_to_record(field_name, record_dict):
+    value = row.get(field_name)
+    if value:
+        value = value.strip()
+        record_dict[field_name] = value
+    else:
+        pass
 
-for row in csvfile:
-    agentRecord = {}
+
+# Convert CSV with people information into DataFrame.
+df = pd.read_csv(filename)
+
+logForAllItems = []
+for index, row in df.iterrows():
+    # Get person information from CSV.
+    sort_name = row['sort_name']
+    print('Gathering person #{}: {}.'.format(index, sort_name))
+
+    # Build JSON record for person.
+    agentRecord = {'agent_type': 'agent_person', 'publish': True}
     names = []
-    name = {'primary_name': row['primaryName'], 'name_order': 'inverted', 'jsonmodel_type': 'name_person',
-            'rules': 'rda', 'sort_name': row['sortName']}
-    try:
-        name['authority_id'] = row['authorityID']
-        name['source'] = 'viaf'
-    except KeyError:
-        pass
-    try:
-        name['rest_of_name'] = row['restOfName']
-    except KeyError:
-        name['name_order'] = 'direct'
-    try:
-        name['fuller_form'] = row['fullerForm']
-    except KeyError:
-        pass
-    try:
-        name['title'] = row['title']
-    except KeyError:
-        pass
-    try:
-        name['prefix'] = row['prefix']
-    except KeyError:
-        pass
-    try:
-        name['suffix'] = row['suffix']
-    except KeyError:
-        pass
-    try:
-        name['dates'] = row['date']
-    except KeyError:
-        pass
+    name = {'jsonmodel_type': 'name_person'}
+    add_field_to_record('primary_name', name)
+    add_field_to_record('name_order', name)
+    add_field_to_record('sort_name', name)
+    add_field_to_record('authority_id', name)
+    add_field_to_record('rules', name)
+    add_field_to_record('source', name)
+    add_field_to_record('rest_of name', name)
+    add_field_to_record('fuller_form', name)
+    add_field_to_record('title', name)
+    add_field_to_record('prefix', name)
+    add_field_to_record('suffix', name)
+    add_field_to_record('dates', name)
     names.append(name)
+    agentRecord['names'] = names
 
-    if row['date'] != '':
-        dates = []
-        date = {'label': 'existence', 'jsonmodel_type': 'date'}
-        if row['expression'] != '':
-            date['expression'] = row['expression']
-            date['date_type'] = 'single'
-        elif row['begin'] != '' and row['end'] != '':
-            date['begin'] = row['begin']
-            date['end'] = row['end']
-            date['date_type'] = 'range'
-        elif row['begin'] != '':
-            date['begin'] = row['begin']
-            date['date_type'] = 'single'
-        elif row['end'] != '':
-            date['end'] = row['end']
-            date['date_type'] = 'single'
+    dates = []
+    date = {}
+    add_field_to_record('jsonmodel_type', date)
+    add_field_to_record('date_label', date)
+    add_field_to_record('date_type', date)
+    add_field_to_record('date_begin', date)
+    add_field_to_record('date_end', date)
+    if date:
         dates.append(date)
         agentRecord['dates_of_existence'] = dates
-        print(dates)
-    agentRecord['names'] = names
-    agentRecord['publish'] = True
-    agentRecord['jsonmodel_type'] = 'agent_person'
+
+    notes = []
+    note = {}
+    subnotes = []
+    subnote = {}
+    add_field_to_record('jsonmodel_type', note)
+    add_field_to_record('publish_note', note)
+    add_field_to_record('content', subnote)
+    add_field_to_record('publish_subnote', subnote)
+    if subnote:
+        subnotes.append(subnote)
+        note['subnotes'] = subnotes
+    if note:
+        notes.append(note)
+        agentRecord['notes'] = notes
+
     agentRecord = json.dumps(agentRecord)
-    print(agentRecord)
-    post = requests.post(baseURL + '/agents/people', headers=headers, data=agentRecord).json()
-    print(json.dumps(post))
-    uri = post['uri']
-    f.writerow([row['sortName']]+[uri])
+    print('JSON created for {}.'.format(sort_name))
+
+    # Create dictionary for item log.
+    itemLog = {}
+
+    # Try to POST JSON to ArchivesSpace API people endpoint.
+    try:
+        post = requests.post(baseURL+'/agents/people', headers=headers, data=agentRecord).json()
+        print(json.dumps(post))
+        uri = post['uri']
+        print('Person successfully created with URI: {}'.format(uri))
+        itemLog = {'uri': uri, 'sort_name': sort_name}
+        # Add item log to list of logs
+        logForAllItems.append(itemLog)
+
+    # If POST to ArchivesSpace fails, break loop.
+    except requests.exceptions.JSONDecodeError:
+        itemLog = {'uri': 'error', 'sort_name': sort_name}
+        # Add item log to list of logs
+        logForAllItems.append(itemLog)
+        print('POST to AS failed, breaking loop.')
+        break
+    print('')
+
+# Convert logForAllItems to DataFrame.
+log = pd.DataFrame.from_dict(logForAllItems)
+
+# Create CSV of all item logs.
+dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
+personCSV = 'postNewPersonalAgents_'+dt+'.csv'
+log.to_csv(personCSV)
+print('{} created.'.format(personCSV))
 
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)

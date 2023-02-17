@@ -1,9 +1,19 @@
 import json
 import requests
-import csv
 import secret
 import time
+import pandas as pd
+import argparse
 from datetime import datetime
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--file')
+args = parser.parse_args()
+
+if args.file:
+    filename = args.file
+else:
+    filename = input('Enter filename (including \'.csv\'): ')
 
 secretVersion = input('To edit production server, enter secret filename: ')
 if secretVersion != '':
@@ -22,59 +32,108 @@ user = secret.user
 password = secret.password
 repository = secret.repository
 
-targetFile = input('Enter file name: ')
 
 auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
 session = auth['session']
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
-dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
 
-f = csv.writer(open('postNewFamilyAgents_'+dt+'.csv', 'w'))
-f.writerow(['sortName']+['uri'])
+def add_field_to_record(field_name, record_dict):
+    value = row.get(field_name)
+    if value:
+        value = value.strip()
+        record_dict[field_name] = value
+    else:
+        pass
 
-csvfile = csv.DictReader(open(targetFile))
 
-for row in csvfile:
-    agentRecord = {}
+# Convert CSV with people information into DataFrame.
+df = pd.read_csv(filename)
+
+logForAllItems = []
+for index, row in df.iterrows():
+    sort_name = row.get('sort_name')
+    print('Gathering family #{}: {}.'.format(index, sort_name))
+
+    # Get agent information from CSV.
+    agentRecord = {'agent_type': 'agent_family', 'publish': True}
     names = []
-    name = {'family_name': row['sortName'], 'sort_name': row['sortName'], 'jsonmodel_type': 'name_family',
-            'name_order': 'direct', 'rules': 'rda'}
-    try:
-        name['dates'] = row['dates']
-    except KeyError:
-        pass
-    try:
-        name['qualifier'] = row['qualifier']
-    except KeyError:
-        pass
+    name = {}
+    add_field_to_record('family_name', name)
+    add_field_to_record('sort_name', name)
+    add_field_to_record('rules', name)
+    add_field_to_record('dates', name)
+    add_field_to_record('qualifier', name)
+    add_field_to_record('source', name)
+    add_field_to_record('rules', name)
+    add_field_to_record('authority_id', name)
+    add_field_to_record('use_dates', name)
     names.append(name)
-    if row['dates'] != '':
-        dates = []
-        date = {'label': 'existence', 'jsonmodel_type': 'date'}
-        if row['begin'] != '' and row['end'] != '':
-            date['begin'] = row['begin']
-            date['end'] = row['end']
-            date['date_type'] = 'range'
-        elif row['begin'] != '':
-            date['begin'] = row['begin']
-            date['date_type'] = 'single'
-        elif row['end'] != '':
-            date['end'] = row['end']
-            date['date_type'] = 'single'
+    agentRecord['names'] = names
+
+    dates = []
+    date = {}
+    add_field_to_record('jsonmodel_type', date)
+    add_field_to_record('label', date)
+    add_field_to_record('date_type', date)
+    add_field_to_record('begin', date)
+    add_field_to_record('end', date)
+    if date:
         dates.append(date)
         agentRecord['dates_of_existence'] = dates
 
-    agentRecord['names'] = names
-    agentRecord['publish'] = True
-    agentRecord['jsonmodel_type'] = 'agent_family'
+    notes = []
+    note = {}
+    subnotes = []
+    subnote = {}
+    add_field_to_record('jsonmodel_type', note)
+    add_field_to_record('publish_note', note)
+    add_field_to_record('content', subnote)
+    add_field_to_record('publish_subnote', subnote)
+    if subnote:
+        subnotes.append(subnote)
+        note['subnotes'] = subnotes
+    if note:
+        notes.append(note)
+        agentRecord['notes'] = notes
+
     agentRecord = json.dumps(agentRecord)
     print(agentRecord)
     post = requests.post(baseURL+'/agents/families', headers=headers,
                          data=agentRecord).json()
     print(json.dumps(post))
-    uri = post['uri']
-    f.writerow([row['sortName']]+[uri])
+    print('JSON created for {}.'.format(sort_name))
+
+    # Create dictionary for item log.
+    itemLog = {}
+
+    # Try to POST JSON to ArchivesSpace API people endpoint.
+    try:
+        post = requests.post(baseURL+'/agents/family', headers=headers, data=agentRecord).json()
+        print(json.dumps(post))
+        uri = post['uri']
+        print('Family successfully created with URI: {}'.format(uri))
+        itemLog = {'uri': uri, 'sort_name': sort_name}
+        # Add item log to list of logs
+        logForAllItems.append(itemLog)
+
+    # If POST to ArchivesSpace fails, break loop.
+    except requests.exceptions.JSONDecodeError:
+        itemLog = {'uri': 'error', 'sort_name': sort_name}
+        # Add item log to list of logs
+        logForAllItems.append(itemLog)
+        print('POST to AS failed, breaking loop.')
+        break
+    print('')
+
+# Convert logForAllItems to DataFrame.
+log = pd.DataFrame.from_dict(logForAllItems)
+
+# Create CSV of all item logs.
+dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
+familyCSV = 'postNewPFamilyAgents_'+dt+'.csv'
+log.to_csv(familyCSV)
+print('{} created.'.format(familyCSV))
 
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)

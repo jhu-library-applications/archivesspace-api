@@ -57,6 +57,14 @@ for count, item in enumerate(itemList):
     output = requests.get(baseURL+item, headers=headers, verify=verify).json()
     collect_property(output, 'uri')
     collect_property(output, 'title')
+    subjects = output.get('subjects')
+    for subject in subjects:
+        collect_property(subject, 'ref', 'subject')
+    linked_agents = output.get('linked_agents')
+    for linked_agent in linked_agents:
+        collect_property(linked_agent, 'role')
+        collect_property(linked_agent, 'relator')
+        collect_property(linked_agent, 'ref', 'linked_agent')
     dates = output.get('dates')
     for date in dates:
         collect_property(date, 'expression')

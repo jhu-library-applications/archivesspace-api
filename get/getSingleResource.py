@@ -25,7 +25,7 @@ if args.uri:
 else:
     uri = input('Enter handle (\'/repositories/3/resources/855\'): ')
 
-uri = '/repositories/3/resources/1384'
+uri = '/repositories/3/archival_objects/257988'
 
 baseURL = secret.baseURL
 user = secret.user
@@ -40,6 +40,7 @@ headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json
 
 print(baseURL+uri)
 output = requests.get(baseURL + uri, headers=headers, verify=verify).json()
+repository = str(repository)
 uri = uri.replace('/repositories/'+repository+'/', '').replace('/', '-')
 f = open(uri+'.json', 'w')
 results = (json.dump(output, f))

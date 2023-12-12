@@ -61,12 +61,12 @@ for index, row in df.iterrows():
     names = []
     name = {'jsonmodel_type': 'name_person'}
     add_field_to_record('primary_name', name)
+    add_field_to_record('rest_of name', name)
     add_field_to_record('name_order', name)
     add_field_to_record('sort_name', name)
     add_field_to_record('authority_id', name)
     add_field_to_record('rules', name)
     add_field_to_record('source', name)
-    add_field_to_record('rest_of name', name)
     add_field_to_record('fuller_form', name)
     add_field_to_record('title', name)
     add_field_to_record('prefix', name)
@@ -76,8 +76,7 @@ for index, row in df.iterrows():
     agentRecord['names'] = names
 
     dates = []
-    date = {}
-    add_field_to_record('jsonmodel_type', date)
+    date = {'jsonmodel_type': 'date'}
     add_field_to_record('date_label', date)
     add_field_to_record('date_type', date)
     add_field_to_record('date_begin', date)
@@ -90,7 +89,7 @@ for index, row in df.iterrows():
     note = {}
     subnotes = []
     subnote = {}
-    add_field_to_record('jsonmodel_type', note)
+    add_field_to_record('notes_jsonmodel_type', note)
     add_field_to_record('publish_note', note)
     add_field_to_record('content', subnote)
     add_field_to_record('publish_subnote', subnote)
@@ -107,24 +106,24 @@ for index, row in df.iterrows():
     # Create dictionary for item log.
     itemLog = {}
 
-    # Try to POST JSON to ArchivesSpace API people endpoint.
-    try:
-        post = requests.post(baseURL+'/agents/people', headers=headers, data=agentRecord).json()
-        print(json.dumps(post))
-        uri = post['uri']
-        print('Person successfully created with URI: {}'.format(uri))
-        itemLog = {'uri': uri, 'sort_name': sort_name}
-        # Add item log to list of logs
-        logForAllItems.append(itemLog)
-
-    # If POST to ArchivesSpace fails, break loop.
-    except requests.exceptions.JSONDecodeError:
-        itemLog = {'uri': 'error', 'sort_name': sort_name}
-        # Add item log to list of logs
-        logForAllItems.append(itemLog)
-        print('POST to AS failed, breaking loop.')
-        break
-    print('')
+    # # Try to POST JSON to ArchivesSpace API people endpoint.
+    # try:
+    #     post = requests.post(baseURL+'/agents/people', headers=headers, data=agentRecord).json()
+    #     print(json.dumps(post))
+    #     uri = post['uri']
+    #     print('Person successfully created with URI: {}'.format(uri))
+    #     itemLog = {'uri': uri, 'sort_name': sort_name}
+    #     # Add item log to list of logs
+    #     logForAllItems.append(itemLog)
+    #
+    # # If POST to ArchivesSpace fails, break loop.
+    # except requests.exceptions.JSONDecodeError:
+    #     itemLog = {'uri': 'error', 'sort_name': sort_name}
+    #     # Add item log to list of logs
+    #     logForAllItems.append(itemLog)
+    #     print('POST to AS failed, breaking loop.')
+    #     break
+    # print('')
 
 # Convert logForAllItems to DataFrame.
 log = pd.DataFrame.from_dict(logForAllItems)

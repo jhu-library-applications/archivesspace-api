@@ -94,7 +94,7 @@ for count, row in df.iterrows():
 
 log = pd.DataFrame.from_dict(log)
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
-log.to_csv('logOfUpdatedAO_'+dt+'.csv')
+log.to_csv('logOfUpdatedAO_'+dt+'.csv', index=False)
 
 # Show script runtime
 elapsedTime = time.time() - startTime

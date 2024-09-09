@@ -37,9 +37,10 @@ if args.file:
 else:
     filename = input('Enter file name as filename.csv: ')
 
+s = requests.Session()
+
 # authenticate
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password,
-                     verify=verify).json()
+auth = s.post(baseURL+'/users/'+user+'/login?password='+password, verify=verify).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session,
            'Content_Type': 'application/json'}
@@ -54,8 +55,13 @@ for count, row in df.iterrows():
     uri = row['uri']
     csv_title = row['title']
     ao_link = baseURL+uri
-    ao_object = requests.get(ao_link, headers=headers,
-                             verify=verify).json()
+    try:
+        ao_object = s.get(ao_link, headers=headers, verify=verify).json()
+    except requests.exceptions.RequestException as e:
+        itemLog['error'] = e
+        print(e)
+        log.append(itemLog)
+        continue
     title = ao_object['title']
     print('Item {} retrieved, number {} of {}'.format(uri, count+1, total_count))
     if csv_title == title:
@@ -65,6 +71,7 @@ for count, row in df.iterrows():
         title_error = 'Incorrect title {}'.format(title)
         print(title_error)
         itemLog['error'] = title_error
+        log.append(itemLog)
         continue
     if not linked_agents:
         csv_agents = row['linked_agents']
@@ -82,11 +89,15 @@ for count, row in df.iterrows():
         print(error)
         itemLog['error'] = error
         itemLog['api_agents'] = linked_agents
+        log.append(itemLog)
         continue
     ao_object['linked_agents'] = new_agents
     ao_object = json.dumps(ao_object)
-    post = requests.post(ao_link, headers=headers,
-                         verify=verify, data=ao_object).json()
+    try:
+        post = s.post(ao_link, headers=headers, verify=verify, data=ao_object).json()
+    except requests.exceptions.RequestException as e:
+        itemLog['error'] = e
+        print(e)
     status = post['status']
     itemLog['post_status'] = status
     print(status)

@@ -47,7 +47,7 @@ for a_id in ids:
 df = pd.DataFrame.from_dict(allItems)
 print(df.head(15))
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
-df.to_csv('corporateEntitesProperties_'+dt+'.csv', index=False)
+df.to_csv('corporateEntitiesProperties_'+dt+'.csv', index=False)
 
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)

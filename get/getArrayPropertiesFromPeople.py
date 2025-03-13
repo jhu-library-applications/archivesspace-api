@@ -1,4 +1,3 @@
-import json
 import requests
 import secret
 import csv
@@ -28,7 +27,7 @@ print('authenticated')
 
 endpoint = '/agents/people?all_ids=true'
 
-ids = requests.get(baseURL + endpoint, headers=headers).json()
+ids = requests.get(baseURL+endpoint, headers=headers).json()
 
 records = []
 for agent_id in ids:

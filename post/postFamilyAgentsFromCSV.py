@@ -127,7 +127,7 @@ for index, row in df.iterrows():
     print('')
 
 # Convert logForAllItems to DataFrame.
-log = pd.DataFrame.from_dict(logForAllItems)
+log = pd.DataFrame.from_records(logForAllItems)
 
 # Create CSV of all item logs.
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')

@@ -44,7 +44,7 @@ uniqueTopContainers = []
 for resource_id in ids:
     resourceTopContainers = []
     print('a_id', resource_id, total, 'records remaining')
-    total = total - 1
+    total -= 1
     endpoint = '/repositories/'+repository+'/resources/'+str(resource_id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     title = output['title']
@@ -78,7 +78,7 @@ for resource_id in ids:
         resultsPage = search['results']
         for result in resultsPage:
             results.append(result)
-        page = page + 1
+        page += 1
 
     for result in results:
         try:

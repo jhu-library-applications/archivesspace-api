@@ -71,7 +71,7 @@ for count, row in df.iterrows():
     itemLog['post'] = post
     log.append(itemLog)
 
-log = pd.DataFrame.from_dict(log)
+log = pd.DataFrame.from_records(log)
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
 log.to_csv('logOfUpdatedAO_'+dt+'.csv')
 

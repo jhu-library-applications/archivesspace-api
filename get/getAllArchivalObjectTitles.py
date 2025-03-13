@@ -31,21 +31,21 @@ endpoint = '/repositories/' + repository + '/archival_objects?all_ids=true'
 ids = requests.get(baseURL + endpoint, headers=headers).json()
 print(len(ids))
 
-allItems = []
+all_items = []
 for r_id in ids:
     print(r_id)
-    endpoint = '/repositories/' + repository + '/archival_objects/' + str(id)
+    endpoint = '/repositories/'+repository+'/archival_objects/'+str(id)
     output = requests.get(baseURL + endpoint, headers=headers).json()
     title = output.get('title')
     uri = output.get('uri')
     print(title, uri)
-    idDict = {'uri': uri, 'title': title}
-    allItems.append(idDict)
+    id_dict = {'uri': uri, 'title': title}
+    all_items.append(id_dict)
 
-df = pd.DataFrame.from_dict(allItems)
+df = pd.DataFrame.from_records(all_items)
 print(df.head(15))
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
-df.to_csv('aspaceResourcesBib_' + dt + '.csv', index=False)
+df.to_csv('aspaceResourcesBib_'+dt+'.csv', index=False)
 
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)

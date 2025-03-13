@@ -40,7 +40,7 @@ headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json
 # Convert CSV with subject information into DataFrame.
 df = pd.read_csv(filename)
 
-logForAllItems = []
+all_items = []
 for index, row in df.iterrows():
     # Get subject information from CSV.
     label = row['label']
@@ -74,19 +74,19 @@ for index, row in df.iterrows():
         print('Subject successfully created with URI: {}'.format(uri))
         itemLog = {'uri': uri, 'label': label}
         # Add item log to list of logs
-        logForAllItems.append(itemLog)
+        all_items.append(itemLog)
 
     # If POST to ArchivesSpace fails, break loop.
     except requests.exceptions.JSONDecodeError:
         itemLog = {'uri': 'error', 'label': label}
         # Add item log to list of logs
-        logForAllItems.append(itemLog)
+        all_items.append(itemLog)
         print('POST to AS failed, breaking loop.')
         break
     print('')
 
-# Convert logForAllItems to DataFrame.
-log = pd.DataFrame.from_dict(logForAllItems)
+# Convert all_items to DataFrame.
+log = pd.DataFrame.from_records(all_items)
 
 # Create CSV of all item logs.
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')

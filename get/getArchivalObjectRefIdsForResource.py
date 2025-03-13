@@ -71,10 +71,10 @@ for archivalObject in archivalObjects:
         aoDict['top_container'] = top_container.get('ref')
     objectList.append(aoDict)
 
-df = pd.DataFrame.from_dict(objectList)
+df = pd.DataFrame.from_records(objectList)
 print(df.head(15))
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
-df.to_csv(path_or_buf='RefIds' + resourceID + '_' + dt + '.csv', index=False)
+df.to_csv(path_or_buf='RefIds'+resourceID+'_'+dt+'.csv', index=False)
 
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)

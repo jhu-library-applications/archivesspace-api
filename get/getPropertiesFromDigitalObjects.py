@@ -37,9 +37,9 @@ def collect_property(dictionary, do_property, name=None):
         value = dictionary.get(do_property)
         if value is not None:
             if name:
-                tiny_dict[name] = value
+                digital_dict[name] = value
             else:
-                tiny_dict[do_property] = value
+                digital_dict[do_property] = value
 
 
 auth = requests.post(baseURL + '/users/' + user + '/login?password=' + password).json()
@@ -47,9 +47,10 @@ session = auth['session']
 print(auth)
 print(session)
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
+
 all_items = []
 for count, item in enumerate(itemList):
-    tiny_dict = {}
+    digital_dict = {}
     print(count)
     print(baseURL + item)
     output = requests.get(baseURL + item, headers=headers).json()
@@ -58,9 +59,9 @@ for count, item in enumerate(itemList):
     files = output.get('file_versions')
     for file in files:
         collect_property(file, 'file_uri')
-    all_items.append(tiny_dict)
+    all_items.append(digital_dict)
 
-df = pd.DataFrame.from_dict(all_items)
+df = pd.DataFrame.from_records(all_items)
 print(df.head)
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
-df.to_csv('digitalObjects_' + dt + '.csv', index=False)
+df.to_csv('digitalObjects_'+dt+'.csv', index=False)

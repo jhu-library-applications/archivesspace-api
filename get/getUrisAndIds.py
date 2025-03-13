@@ -2,6 +2,7 @@ import requests
 import secret
 import pandas as pd
 from datetime import datetime
+import time
 
 secretVersion = input('To edit production server, enter secret filename: ')
 if secretVersion != '':
@@ -29,13 +30,13 @@ endpoint = '/repositories/'+repository+'/'+recordType+'?all_ids=true'
 ids = requests.get(baseURL+endpoint, headers=headers).json()
 
 total = len(ids)
-allItems = []
+all_items = []
 for id in ids:
     print('a_id', id, total, recordType, ' remaining')
     total = total - 1
-    idDict = {}
+    id_dict = {}
     endpoint = '/repositories/'+repository+'/'+recordType+'/'+str(id)
-    idDict['uri'] = endpoint
+    id_dict['uri'] = endpoint
     output = requests.get(baseURL + endpoint, headers=headers).json()
     id_0 = output.get('id_0')
     id_1 = output.get('id_1')
@@ -43,14 +44,14 @@ for id in ids:
     id_3 = output.get('id_3')
     if id_0 and id_1 and id_2 and id_3:
         ConCatID = id_0+'.'+id_1+'.'+id_2+'.'+id_3
-        idDict['ConCatID'] = ConCatID
-    idDict['id_0'] = id_0
-    idDict['id_1'] = id_1
-    idDict['id_2'] = id_3
-    idDict['id_3'] = id_3
-    allItems.append(idDict)
+        id_dict['ConCatID'] = ConCatID
+    id_dict['id_0'] = id_0
+    id_dict['id_1'] = id_1
+    id_dict['id_2'] = id_3
+    id_dict['id_3'] = id_3
+    all_items.append(id_dict)
 
-df = pd.DataFrame.from_dict(allItems)
+df = pd.DataFrame.from_records(all_items)
 print(df.head(15))
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
 df.to_csv(recordType+'_'+dt+'UrisAndIds.csv', index=False)

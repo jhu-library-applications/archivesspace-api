@@ -38,7 +38,7 @@ for r_id in ids:
     endpoint = '/repositories/'+repository+'/resources/'+str(r_id)
     output = requests.get(baseURL+endpoint, headers=headers).json()
     for date in output['dates']:
-        counter = counter + 1
+        counter += 1
         print(counter)
         try:
             begin = date['begin']

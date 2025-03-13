@@ -61,7 +61,7 @@ for count, item in enumerate(itemList):
     all_items.append(tiny_dict)
 
 
-df = pd.DataFrame.from_dict(all_items)
+df = pd.DataFrame.from_records(all_items)
 print(df.head)
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
 df.to_csv('top_containers_'+dt+'.csv', index=False)

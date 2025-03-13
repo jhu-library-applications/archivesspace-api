@@ -31,20 +31,20 @@ endpoint = '/agents/corporate_entities?all_ids=true'
 ids = requests.get(baseURL+endpoint, headers=headers).json()
 print(len(ids))
 
-allItems = []
+all_items = []
 for a_id in ids:
     print(a_id)
     endpoint = '/agents/corporate_entities/'+str(a_id)
     output = requests.get(baseURL+endpoint, headers=headers).json()
-    idDict = {}
+    id_dict = {}
     uri = output['uri']
     names = output['names'][0]
     for key, value in names.items():
-        idDict[key] = value
-    idDict['uri'] = uri
-    allItems.append(idDict)
+        id_dict[key] = value
+    id_dict['uri'] = uri
+    all_items.append(id_dict)
 
-df = pd.DataFrame.from_dict(allItems)
+df = pd.DataFrame.from_records(all_items)
 print(df.head(15))
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
 df.to_csv('corporateEntitiesProperties_'+dt+'.csv', index=False)

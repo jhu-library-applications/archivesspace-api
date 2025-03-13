@@ -28,15 +28,17 @@ print('authenticated')
 
 endpoint = '/subjects?all_ids=true'
 
-ids = requests.get(baseURL+endpoint, headers=headers).json()
-print(len(ids))
+subject_ids = requests.get(baseURL+endpoint, headers=headers).json()
+total_subjects = len(subject_ids)
+print('Total of {} subjects.'.format(total_subjects))
 
-allItems = []
-for a_id in ids:
-    print(a_id)
-    endpoint = '/subjects/'+str(a_id)
+all_items = []
+for subject_id in subject_ids:
+    print(subject_id)
+    subject_dict = {}
+    endpoint = '/subjects/'+str(subject_id)
     output = requests.get(baseURL+endpoint, headers=headers).json()
-    idDict = {}
+
     uri = output['uri']
     title = output['title']
     authority_id = output.get('authority_id')
@@ -44,14 +46,14 @@ for a_id in ids:
     terms = output['terms'][0]
     term_type = terms.get('term_type')
     print(term_type)
-    idDict['uri'] = uri
-    idDict['title'] = title
-    idDict['authority_id'] = authority_id
-    idDict['source'] = source
-    idDict['term_type'] = term_type
-    allItems.append(idDict)
+    subject_dict['uri'] = uri
+    subject_dict['title'] = title
+    subject_dict['authority_id'] = authority_id
+    subject_dict['source'] = source
+    subject_dict['term_type'] = term_type
+    all_items.append(subject_dict)
 
-df = pd.DataFrame.from_dict(allItems)
+df = pd.DataFrame.from_records(all_items)
 print(df.head(15))
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
 df.to_csv('subjectProperties_'+dt+'.csv', index=False)

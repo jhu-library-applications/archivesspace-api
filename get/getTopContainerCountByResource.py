@@ -15,18 +15,19 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
+repository = str(repository)
 endpoint = '/repositories/'+repository+'/resources?all_ids=true'
 
-ids = requests.get(baseURL + endpoint, headers=headers).json()
+ids = requests.get(base_url + endpoint, headers=headers).json()
 
 f = csv.writer(open('topContainerCountByResource.csv', 'w'))
 f.writerow(['title']+['bib']+['uri']+['id_0']+['id_1']+['id_2']+['id_3']+['topContainerCount'])
@@ -46,7 +47,7 @@ for resource_id in ids:
     print('a_id', resource_id, total, 'records remaining')
     total -= 1
     endpoint = '/repositories/'+repository+'/resources/'+str(resource_id)
-    output = requests.get(baseURL + endpoint, headers=headers).json()
+    output = requests.get(base_url + endpoint, headers=headers).json()
     title = output['title']
     print(title)
     uri = output['uri']
@@ -74,7 +75,7 @@ for resource_id in ids:
     while resultsPage:
         print(page)
         payload = {'page': page, 'page_size': '100', 'root_record': endpoint}
-        search = requests.get(baseURL+'/search', headers=headers, params=payload).json()
+        search = requests.get(base_url+'/search', headers=headers, params=payload).json()
         resultsPage = search['results']
         for result in resultsPage:
             results.append(result)
@@ -104,7 +105,7 @@ for topContainerLink in topContainerLinks:
 print('unique top containers')
 for topContainer in uniqueTopContainers:
     print(topContainer)
-    search = requests.get(baseURL+topContainer, headers=headers).json()
+    search = requests.get(base_url+topContainer, headers=headers).json()
     try:
         indicator = search['indicator']
     except KeyError:

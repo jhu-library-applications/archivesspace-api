@@ -15,24 +15,24 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password, verify=False).json()
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password, verify=False).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 print('authenticated')
 repository =['5']
 for repo in repository:
     endpoint = '/repositories/'+repo+'/resources'
-    ids = requests.get(baseURL+endpoint, headers=headers, verify=False).json()
+    ids = requests.get(base_url+endpoint, headers=headers, verify=False).json()
     print(ids)
     # for a_id in ids:
     #     a_id = str(a_id)
     #     endpoint = '/repositories/'+repo+'/resources/'+a_id
-    #     output = requests.get(baseURL+endpoint, headers=headers, verify=False).json()
+    #     output = requests.get(base_url+endpoint, headers=headers, verify=False).json()
     #     f = open(a_id+'_resources.json', 'w')
     #     results = (json.dump(output, f))
     #     f.close()

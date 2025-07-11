@@ -27,12 +27,13 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/' + user + '/login?password=' + password).json()
+repository = str(repository)
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
@@ -49,7 +50,7 @@ def find_key(d, key):
 
 endpoint = '/repositories/' + repository + '/resources/' + resourceID + '/tree'
 print(endpoint)
-output = requests.get(baseURL + endpoint, headers=headers).json()
+output = requests.get(base_url + endpoint, headers=headers).json()
 archivalObjects = []
 for value in find_key(output, 'record_uri'):
     archivalObjects.append(value)
@@ -77,7 +78,7 @@ def add_to_dictnest1(arc_dict, value):
 
 arcList = []
 for archivalObject in archivalObjects:
-    output = requests.get(baseURL + archivalObject, headers=headers).json()
+    output = requests.get(base_url + archivalObject, headers=headers).json()
     arc_dict = {}
     add_to_dict(arc_dict, 'title')
     add_to_dict(arc_dict, 'uri')

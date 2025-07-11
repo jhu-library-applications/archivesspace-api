@@ -47,19 +47,19 @@ types = ''.join(types)
 print(types)
 
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
 
 endpoint = '/repositories/3/search?q='+keyword+types+'&page_size=2000&page=1'
 
-results = requests.get(baseURL + endpoint, headers=headers).json()
+results = requests.get(base_url + endpoint, headers=headers).json()
 results = results['results']
 
 f = csv.writer(open(keyword+'Search.csv', 'w'))

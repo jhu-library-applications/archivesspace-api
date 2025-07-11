@@ -15,18 +15,18 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
 endpoint = '/search?page=1&page_size=2000&entity_type[]=top_container&filter_term[]={"empty_u_sbool":true}&q="/repositories/3"'
 
-results = requests.get(baseURL + endpoint, headers=headers).json()
+results = requests.get(base_url + endpoint, headers=headers).json()
 results = results['results']
 
 f = csv.writer(open('unassociatedTopContainer.csv', 'w'))

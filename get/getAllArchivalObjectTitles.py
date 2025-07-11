@@ -16,26 +16,27 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/' + user + '/login?password=' + password).json()
+auth = requests.post(base_url + '/users/' + user + '/login?password=' + password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 print('authenticated')
 
-endpoint = '/repositories/' + repository + '/archival_objects?all_ids=true'
+repository = str(repository)
+endpoint = '/repositories/'+repository+'/archival_objects?all_ids=true'
 
-ids = requests.get(baseURL + endpoint, headers=headers).json()
-print(len(ids))
+archival_ids = requests.get(base_url + endpoint, headers=headers).json()
+print(len(archival_ids))
 
 all_items = []
-for r_id in ids:
-    print(r_id)
-    endpoint = '/repositories/'+repository+'/archival_objects/'+str(id)
-    output = requests.get(baseURL + endpoint, headers=headers).json()
+for count, ao_id in enumerate(archival_ids):
+    print(count, ao_id)
+    endpoint = '/repositories/'+repository+'/archival_objects/'+str(ao_id)
+    output = requests.get(base_url + endpoint, headers=headers).json()
     title = output.get('title')
     uri = output.get('uri')
     print(title, uri)

@@ -4,7 +4,7 @@ Python scripts used to perform various tasks with the ArchivesSpace API
 
 All of these scripts require a secret.py file in the same directory that must contain the following text:
 
-	baseURL = '[ArchivesSpace API URL]'
+	base_url = '[ArchivesSpace API URL]'
 	user = '[user name]'
 	password = '[password]'
 	repository = '[repository]'
@@ -50,7 +50,7 @@ Retrieves the title, URI, ref_id, date expression, and level for all archival ob
 #### [getArrayPropertiesFromPeople.py](/get/getArrayPropertiesFromPeople.py)
 Retrieves specific properties, including properties that have arrays as values, from the JSON of ArchivesSpace agent_people records.
 
-#### [getEntitiesNotPublished.py](/get/getEntitiesNotPublished.py)
+#### [getEntitiesNotPublished.py](/get/getAgentsNotPublished.py)
 Retrieves unpublished entities (where Publish = False) from ArchivesSpace and lists them in a CSV file.
 
 Using the argparse module, the user enters in the terminal either "people," "corporate_entities," or "families" to search for unpublished entities under those categories. The CSV also prints several properties of the unpublished agent, which can be adjusted in the script based on information needs.

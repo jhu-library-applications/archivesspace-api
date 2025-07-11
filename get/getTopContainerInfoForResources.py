@@ -3,6 +3,7 @@ import secret
 import pandas as pd
 import argparse
 from datetime import datetime
+from helpingscripts import collect_value
 
 secretVersion = input('To edit production server, enter secret file name: ')
 if secretVersion != '':
@@ -23,7 +24,7 @@ if args.file:
 else:
     filename = input('Enter file name as filename.csv: ')
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
@@ -35,14 +36,7 @@ itemList = list(itemList)
 print(itemList)
 
 
-def collect_value(dictionary, tc_property):
-    if dictionary:
-        value = dictionary.get(tc_property)
-        if value:
-            tiny_dict[tc_property] = value
-
-
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth['session']
 print(session)
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
@@ -50,14 +44,14 @@ headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json
 all_items = []
 for count, item in enumerate(itemList):
     tiny_dict = {}
-    print(baseURL+item)
+    print(base_url+item)
     print(count)
-    output = requests.get(baseURL+item, headers=headers).json()
-    collect_value(output, 'barcode')
-    collect_value(output, 'entity_type')
-    collect_value(output, 'indicator')
-    collect_value(output, 'display_string')
-    collect_value(output, 'uri')
+    output = requests.get(base_url+item, headers=headers).json()
+    collect_value(output, 'barcode', tiny_dict)
+    collect_value(output, 'entity_type', tiny_dict)
+    collect_value(output, 'indicator', tiny_dict)
+    collect_value(output, 'display_string', tiny_dict)
+    collect_value(output, 'uri', tiny_dict)
     all_items.append(tiny_dict)
 
 

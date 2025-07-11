@@ -27,20 +27,21 @@ def find_key(d, key):
                     yield j
 
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/' + user + '/login?password=' + password).json()
+auth = requests.post(base_url + '/users/' + user + '/login?password=' + password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
 resourceID = input('Enter resource ID: ')
 
-endpoint = '/repositories/' + repository + '/resources/' + resourceID + '/tree'
+repository = str(repository)
+endpoint = '/repositories/'+repository+'/resources/'+resourceID+'/tree'
 
-output = requests.get(baseURL + endpoint, headers=headers).json()
+output = requests.get(base_url+endpoint, headers=headers).json()
 print(output)
 archivalObjects = []
 for value in find_key(output, 'record_uri'):
@@ -53,7 +54,7 @@ print('downloading aos')
 fieldList = ['title', 'uri', 'ref_id', 'level']
 objectList = []
 for archivalObject in archivalObjects:
-    output = requests.get(baseURL + archivalObject, headers=headers).json()
+    output = requests.get(base_url + archivalObject, headers=headers).json()
     aoDict = {}
     for x in fieldList:
         value = output.get(x)

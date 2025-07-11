@@ -20,7 +20,7 @@ else:
     print('Editing Development')
 
 # import secret
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repo = secret.repository
@@ -38,7 +38,7 @@ else:
     filename = input('Enter file name as filename.csv: ')
 
 # authenticate
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password,
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password,
                      verify=verify).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session,
@@ -53,7 +53,7 @@ for count, row in df.iterrows():
     uri = row['uri']
     print(count, archival_object)
     itemLog['archival_object'] = archival_object
-    ao_object = requests.get(baseURL + archival_object, headers=headers,
+    ao_object = requests.get(base_url + archival_object, headers=headers,
                              verify=verify).json()
     instance = {'instance_type': 'digital_object', 'jsonmodel_type': 'instance',
                 'is_representative': False,
@@ -66,7 +66,7 @@ for count, row in df.iterrows():
         ao_object['instances'] = [instance]
     print(ao_object)
     ao_object = json.dumps(ao_object)
-    post = requests.post(baseURL + archival_object, headers=headers,
+    post = requests.post(base_url + archival_object, headers=headers,
                          verify=verify, data=ao_object).json()
     itemLog['post'] = post
     log.append(itemLog)

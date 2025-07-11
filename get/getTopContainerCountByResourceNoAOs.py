@@ -15,18 +15,19 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
+repository = str(repository)
 endpoint = '/repositories/'+repository+'/resources?all_ids=true'
 
-ids = requests.get(baseURL + endpoint, headers=headers).json()
+ids = requests.get(base_url+endpoint, headers=headers).json()
 
 f = csv.writer(open('topContainerCountByResourceNoAOs.csv', 'w'))
 f.writerow(['title']+['uri']+['id_0']+['id_1']+['id_2']+['id_3']+['topContainerCount'])
@@ -38,7 +39,7 @@ uniqueTopContainers = []
 topContainerLinks = []
 for resource_id in ids:
     endpoint = '/repositories/'+repository+'/resources/'+str(resource_id)
-    output = requests.get(baseURL + endpoint, headers=headers).json()
+    output = requests.get(base_url + endpoint, headers=headers).json()
     topContainersByResource = []
     title = output['title']
     uri = output['uri']
@@ -81,7 +82,7 @@ for topContainerLink in topContainerLinks:
 f3 = csv.writer(open('uniqueTopContainersNoAOs.csv', 'w'))
 f3.writerow(['topContainer'])
 for topContainer in uniqueTopContainers:
-    search = requests.get(baseURL+topContainer, headers=headers).json()
+    search = requests.get(base_url+topContainer, headers=headers).json()
     try:
         indicator = search['indicator']
     except KeyError:

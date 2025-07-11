@@ -16,18 +16,19 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session,
            'Content_Type': 'application/json'}
 
+repository = str(repository)
 endpoint = '/repositories/'+repository+'/resources?all_ids=true'
-ids = requests.get(baseURL + endpoint, headers=headers).json()
+ids = requests.get(base_url+endpoint, headers=headers).json()
 
 total = len(ids)
 all_items = []
@@ -35,7 +36,7 @@ for r_id in ids:
     print('a_id', r_id, total, 'resources remaining')
     total -= 1
     endpoint = '/repositories/'+repository+'/resources/'+str(id)
-    output = requests.get(baseURL + endpoint, headers=headers).json()
+    output = requests.get(base_url+endpoint, headers=headers).json()
     id_dict = {}
     title = output['title']
     id_dict['title'] = title

@@ -32,19 +32,19 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 print('authenticated')
 
 endpoint = '/repositories/'+repository+'/digital_objects?all_ids=true'
 
-ids = requests.get(baseURL + endpoint, headers=headers).json()
+ids = requests.get(base_url + endpoint, headers=headers).json()
 print(len(ids))
 
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
@@ -55,7 +55,7 @@ f.writerow(['endpoint']+['doPost'])
 for do_id in ids:
     print(do_id)
     endpoint = '/repositories/'+repository+'/digital_objects/'+str(do_id)
-    output = requests.get(baseURL + endpoint, headers=headers).json()
+    output = requests.get(base_url + endpoint, headers=headers).json()
     originalOutput = output
     originalIdValue = output['digital_object_id']
     editedIdValue = originalIdValue.replace(oldValue, newValue)
@@ -72,7 +72,7 @@ for do_id in ids:
     output['file_versions'] = file_versions
     if (originalIdValue != editedIdValue) or (fileUriChange is True):
         output = json.dumps(output)
-        link = baseURL+'/repositories/'+repository+'/digital_objects/'+str(do_id)
+        link = base_url+'/repositories/'+repository+'/digital_objects/'+str(do_id)
         doPost = requests.post(link, headers=headers, data=output).json()
         print(doPost)
         f.writerow([endpoint]+[doPost])

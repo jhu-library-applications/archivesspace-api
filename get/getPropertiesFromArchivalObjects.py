@@ -23,7 +23,7 @@ if args.file:
 else:
     filename = input('Enter file name as filename.csv: ')
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
@@ -43,7 +43,7 @@ def collect_property(dictionary, ao_property, name=None):
                 tiny_dict[ao_property] = value
 
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password,
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password,
                      verify=verify).json()
 session = auth['session']
 print(auth)
@@ -53,8 +53,8 @@ all_items = []
 for count, item in enumerate(itemList):
     tiny_dict = {}
     print(count)
-    print(baseURL+item)
-    output = requests.get(baseURL+item, headers=headers, verify=verify).json()
+    print(base_url+item)
+    output = requests.get(base_url+item, headers=headers, verify=verify).json()
     collect_property(output, 'uri')
     collect_property(output, 'title')
     subjects = output.get('subjects')

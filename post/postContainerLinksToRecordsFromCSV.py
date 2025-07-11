@@ -15,12 +15,12 @@ else:
 
 targetFile = input('Enter file name: ')
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
@@ -32,7 +32,7 @@ f.writerow(['topContainer']+['resource']+['post'])
 for row in csvfile:
     uri = row['uri']
     resourceUri = row['resourceuri']
-    link = baseURL+resourceUri
+    link = base_url+resourceUri
     asRecord = requests.get(link, headers=headers).json()
     instanceArray = asRecord['instances']
     top_container = {'ref': uri}

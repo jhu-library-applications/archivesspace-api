@@ -26,19 +26,20 @@ else:
     uri = input('Enter handle (\'/repositories/3/resources/855\'): ')
 
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 verify = secret.verify
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password, verify=verify).json()
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
+
 session = auth['session']
 print('Session: '+session)
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
-print(baseURL+uri)
-output = requests.get(baseURL + uri, headers=headers, verify=verify).json()
+print(base_url+uri)
+output = requests.get(base_url + uri, headers=headers, verify=verify).json()
 repository = str(repository)
 uri = uri.replace('/repositories/'+repository+'/', '').replace('/', '-')
 f = open(uri+'.json', 'w')

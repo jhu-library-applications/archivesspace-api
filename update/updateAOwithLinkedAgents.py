@@ -20,7 +20,7 @@ else:
     print('Editing Development')
 
 # import secret
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repo = secret.repository
@@ -40,7 +40,7 @@ else:
 s = requests.Session()
 
 # authenticate
-auth = s.post(baseURL+'/users/'+user+'/login?password='+password, verify=verify).json()
+auth = s.post(base_url+'/users/'+user+'/login?password='+password, verify=verify).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session,
            'Content_Type': 'application/json'}
@@ -54,7 +54,7 @@ for count, row in df.iterrows():
     itemLog = row
     uri = row['uri']
     csv_title = row['title']
-    ao_link = baseURL+uri
+    ao_link = base_url+uri
     try:
         ao_object = s.get(ao_link, headers=headers, verify=verify).json()
     except requests.exceptions.RequestException as e:

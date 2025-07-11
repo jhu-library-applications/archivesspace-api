@@ -18,11 +18,11 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
-print(baseURL + '/users/'+user)
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+print(base_url + '/users/'+user)
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password).json()
 print(auth)
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
@@ -31,7 +31,7 @@ print('authenticated')
 endpoint = '/agents/'+type_entity+'?all_ids=true'
 print(endpoint)
 
-ids = requests.get(baseURL + endpoint, headers=headers).json()
+ids = requests.get(base_url+endpoint, headers=headers).json()
 
 total = len(ids)
 all_items = []
@@ -39,7 +39,7 @@ for e_id in ids:
     print('a_id', e_id, total, 'records remaining')
     total -= 1
     endpoint = '/agents/'+type_entity+'/'+str(e_id)
-    output = requests.get(baseURL + endpoint, headers=headers).json()
+    output = requests.get(base_url + endpoint, headers=headers).json()
     id_dict = {}
     uri = output['uri']
     id_dict['uri'] = uri

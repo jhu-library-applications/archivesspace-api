@@ -28,12 +28,12 @@ def find_key(d, key):
                     yield j
 
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
@@ -41,7 +41,7 @@ resource_id = input('Enter resource ID: ')
 
 treeEndpoint = '/repositories/'+repository+'/resources/'+str(resource_id)+'/tree'
 
-output = requests.get(baseURL + treeEndpoint, headers=headers).json()
+output = requests.get(base_url + treeEndpoint, headers=headers).json()
 archivalObjects = []
 for value in find_key(output, 'record_uri'):
     if 'archival_objects' in value:
@@ -54,10 +54,10 @@ f = csv.writer(open('unpublishedAOs_'+dt+'.csv', 'w'))
 f.writerow(['uri']+['post'])
 
 for archivalObject in archivalObjects:
-    output = requests.get(baseURL+archivalObject, headers=headers).json()
+    output = requests.get(base_url+archivalObject, headers=headers).json()
     output['publish'] = False
     asRecord = json.dumps(output)
-    post = requests.post(baseURL+archivalObject, headers=headers,
+    post = requests.post(base_url+archivalObject, headers=headers,
                          data=asRecord).json()
     post = json.dumps(post)
     print(post)

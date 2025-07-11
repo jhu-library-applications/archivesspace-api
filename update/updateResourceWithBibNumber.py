@@ -17,12 +17,12 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
@@ -36,7 +36,7 @@ for row in urisBibs:
     uri = row['asURI']
     bibNum = row['bibNum']
     print(uri)
-    record = requests.get(baseURL+uri, headers=headers).json()
+    record = requests.get(base_url+uri, headers=headers).json()
     try:
         print(record['user_defined'])
         record['user_defined']['real_1'] = bibNum
@@ -47,7 +47,7 @@ for row in urisBibs:
         print(value)
         existingValue = 'N'
     record = json.dumps(record)
-    post = requests.post(baseURL+uri, headers=headers, data=record)
+    post = requests.post(base_url+uri, headers=headers, data=record)
     print(post)
     f.writerow([uri]+[existingValue]+[bibNum]+[post])
 

@@ -16,17 +16,17 @@ else:
 targetFile = input('Enter file name: ')
 targetRecord = input('Enter record type and resource_id (e.g. \'accessions/2049\'): ')
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL+'/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
 csv = csv.DictReader(open(targetFile))
-link = baseURL+'/repositories/'+repository+'/'+targetRecord
+link = base_url+'/repositories/'+repository+'/'+targetRecord
 asRecord = requests.get(link, headers=headers).json()
 print(link)
 f = open(targetRecord+'asRecordBackup.json', 'w')

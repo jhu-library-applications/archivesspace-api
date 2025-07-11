@@ -27,12 +27,12 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
@@ -45,7 +45,7 @@ records = json.load(open(file))
 for i in range(0, len(records)):
     record = json.dumps(records[i])
     uri = records[i]['uri']
-    post = requests.post(baseURL+uri, headers=headers, data=record).json()
+    post = requests.post(base_url+uri, headers=headers, data=record).json()
     post = json.dumps(post)
     print(post)
     f.writerow([uri]+[post])

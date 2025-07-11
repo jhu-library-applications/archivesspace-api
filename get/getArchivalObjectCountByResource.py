@@ -26,18 +26,19 @@ def find_key(d, key):
                     yield j
 
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
+repository = str(repository)
 endpoint = '/repositories/'+repository+'/resources?all_ids=true'
 
-ids = requests.get(baseURL + endpoint, headers=headers).json()
+ids = requests.get(base_url+endpoint, headers=headers).json()
 print(len(ids))
 
 f = csv.writer(open('archivalObjectCountByResource.csv', 'w'))
@@ -47,7 +48,7 @@ records = []
 for resource_id in ids:
     print(resource_id)
     endpoint = '/repositories/'+repository+'/resources/'+str(resource_id)
-    output = requests.get(baseURL + endpoint, headers=headers).json()
+    output = requests.get(base_url + endpoint, headers=headers).json()
     title = output['title']
     uri = output['uri']
     id0 = output['id_0']
@@ -70,7 +71,7 @@ for resource_id in ids:
 
     treeEndpoint = '/repositories/'+repository+'/resources/'+str(resource_id)+'/tree'
 
-    output2 = requests.get(baseURL + treeEndpoint, headers=headers).json()
+    output2 = requests.get(base_url + treeEndpoint, headers=headers).json()
     archivalObjects = []
     for value in find_key(output2, 'record_uri'):
         print(value)

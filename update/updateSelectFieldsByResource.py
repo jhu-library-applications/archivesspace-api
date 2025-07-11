@@ -27,12 +27,12 @@ else:
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
@@ -47,7 +47,7 @@ with open(filename, encoding='utf-8') as changesFile:
         endpoint = element['uri'].strip()
         print(endpoint)
         try:
-            output = requests.get(baseURL + endpoint, headers=headers).json()
+            output = requests.get(base_url + endpoint, headers=headers).json()
         except:
             continue
 
@@ -122,7 +122,7 @@ with open(filename, encoding='utf-8') as changesFile:
             finding_aid_rules = new_output['finding_aid_description_rules']
             f.writerow([title]+[uri]+[finding_aid_title]+[ead_id]+[ead_url]+[finding_aid_language]+[finding_aid_rules])
             print([title]+[uri]+[finding_aid_title]+[ead_id]+[ead_url]+[finding_aid_language]+[finding_aid_rules])
-            post = requests.post(baseURL + uri, headers=headers, data=json.dumps(new_output))
+            post = requests.post(base_url + uri, headers=headers, data=json.dumps(new_output))
             print(post)
             print('')
         else:

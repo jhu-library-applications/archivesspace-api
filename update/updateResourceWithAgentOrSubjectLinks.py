@@ -30,7 +30,7 @@ def add_uri_link(key, value_source):
     uri = '/repositories/'+repository+'/resources/'+row['ResourceUri']
     value = row[value_source]
     print(value)
-    as_record = requests.get(baseURL+uri, headers=headers).json()
+    as_record = requests.get(base_url+uri, headers=headers).json()
     updated_record = as_record
     if key == 'subjects':
         subjects = updated_record['subjects']
@@ -40,7 +40,7 @@ def add_uri_link(key, value_source):
             updated_record['subjects'] = subjects
             print(updated_record['subjects'])
             updated_record = json.dumps(updated_record)
-            link = baseURL+uri
+            link = base_url+uri
             print(link)
             post = requests.post(link, headers=headers,
                                  data=updated_record).json()
@@ -69,8 +69,8 @@ def add_uri_link(key, value_source):
             print(agents)
             updated_record['linked_agents'] = agents
             updated_record = json.dumps(updated_record)
-            print(baseURL + uri)
-            post = requests.post(baseURL+uri, headers=headers, data=updated_record).json()
+            print(base_url + uri)
+            post = requests.post(base_url+uri, headers=headers, data=updated_record).json()
             print(post)
             f.writerow([uri]+[agents]+[post])
         else:
@@ -84,12 +84,12 @@ def add_uri_link(key, value_source):
 
 startTime = time.time()
 
-baseURL = secret.baseURL
+base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(baseURL + '/users/'+user+'/login?password='+password).json()
+auth = requests.post(base_url + '/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 

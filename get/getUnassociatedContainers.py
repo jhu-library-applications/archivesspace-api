@@ -1,3 +1,5 @@
+"""Prints the URIs to a CSV file of all top containers that are not associated with a resource or archival object."""
+
 import requests
 import secret
 import time

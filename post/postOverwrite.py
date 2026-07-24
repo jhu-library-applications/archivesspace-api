@@ -1,3 +1,5 @@
+"""Overwrites existing ArchivesSpace records based the 'uri' and can be used with any ArchivesSpace record type (e.g. resource, accession, subject, agent_people, agent_corporate_entity, archival_object, etc.). """
+
 import json
 import requests
 import csv

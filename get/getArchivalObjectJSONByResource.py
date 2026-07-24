@@ -1,3 +1,5 @@
+"""Creates JSON file of archival objects for a particular resource."""
+
 import json
 import requests
 import secret

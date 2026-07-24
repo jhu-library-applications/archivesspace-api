@@ -1,3 +1,5 @@
+"""Posts agent or subject links to resources based on a specified CSV file."""
+
 import json
 import requests
 import secret

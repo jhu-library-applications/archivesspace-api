@@ -1,3 +1,5 @@
+"""You can choose one or more types of records (accession, resource, subject, agent, location, or archival_object) to search in ArchiveSpace by a certain keyword. This will return a CSV with the URIs of records with that keyword."""
+
 import requests
 import secret
 import csv

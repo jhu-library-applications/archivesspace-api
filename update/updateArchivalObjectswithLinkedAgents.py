@@ -51,59 +51,47 @@ total_count = len(df)
 log = []
 for count, row in df.iterrows():
     row = row
-    itemLog = row
+    item_log = row
     uri = row['uri']
-    csv_title = row['title']
+    new_note_content = row['access_conditions']
+    new_extent = row['extents']
     ao_link = base_url+uri
     try:
         ao_object = s.get(ao_link, headers=headers, verify=verify).json()
     except requests.exceptions.RequestException as e:
-        itemLog['error'] = e
+        item_log['error'] = e
         print(e)
-        log.append(itemLog)
+        log.append(item_log)
         continue
     title = ao_object['title']
+    existing_extents = ao_object['extents']
+    existing_notes = ao_object['notes']
     print('Item {} retrieved, number {} of {}'.format(uri, count+1, total_count))
-    if csv_title == title:
-        linked_agents = ao_object['linked_agents']
-        print('Title verified')
+    new_note = {"jsonmodel_type": "note_multipart", 'publish': True
+            }
+    if existing_notes:
+        for existing_note in existing_notes:
+            if existing_note['type'] == 'accessconditons':
+
+            else:
+
+
     else:
-        title_error = 'Incorrect title {}'.format(title)
-        print(title_error)
-        itemLog['error'] = title_error
-        log.append(itemLog)
-        continue
-    if not linked_agents:
-        csv_agents = row['linked_agents']
-        csv_agents = csv_agents.split('||')
-        new_agents = []
-        for agent in csv_agents:
-            agent_parts = agent.split(';;')
-            role = agent_parts[0]
-            ref = agent_parts[1]
-            new_agent = {'role': role,
-                         'ref': ref}
-            new_agents.append(new_agent)
-    else:
-        error = 'Linked agents already exist.'
-        print(error)
-        itemLog['error'] = error
-        itemLog['api_agents'] = linked_agents
-        log.append(itemLog)
-        continue
+
+
     ao_object['linked_agents'] = new_agents
     ao_object = json.dumps(ao_object)
     try:
         post = s.post(ao_link, headers=headers, verify=verify, data=ao_object).json()
     except requests.exceptions.RequestException as e:
-        itemLog['error'] = e
+        item_log['error'] = e
         print(e)
     status = post['status']
-    itemLog['post_status'] = status
+    item_log['post_status'] = status
     print(status)
-    log.append(itemLog)
+    log.append(item_log)
 
-log = pd.DataFrame.from_dict(log)
+log = pd.DataFrame.from_records(log)
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
 log.to_csv('logOfUpdatedAO_'+dt+'.csv', index=False)
 

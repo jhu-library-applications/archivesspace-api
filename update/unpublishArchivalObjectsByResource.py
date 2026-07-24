@@ -1,3 +1,5 @@
+"""Un-publishes all archival objects associated with the specified resource."""
+
 import json
 import requests
 import secret

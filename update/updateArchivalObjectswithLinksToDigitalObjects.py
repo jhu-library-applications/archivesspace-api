@@ -48,11 +48,11 @@ df = pd.read_csv(filename)
 
 log = []
 for count, row in df.iterrows():
-    itemLog = {}
+    item_log = {}
     archival_object = row['archival_object']
     uri = row['uri']
     print(count, archival_object)
-    itemLog['archival_object'] = archival_object
+    item_log['archival_object'] = archival_object
     ao_object = requests.get(base_url + archival_object, headers=headers,
                              verify=verify).json()
     instance = {'instance_type': 'digital_object', 'jsonmodel_type': 'instance',
@@ -68,8 +68,8 @@ for count, row in df.iterrows():
     ao_object = json.dumps(ao_object)
     post = requests.post(base_url + archival_object, headers=headers,
                          verify=verify, data=ao_object).json()
-    itemLog['post'] = post
-    log.append(itemLog)
+    item_log['post'] = post
+    log.append(item_log)
 
 log = pd.DataFrame.from_records(log)
 dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')

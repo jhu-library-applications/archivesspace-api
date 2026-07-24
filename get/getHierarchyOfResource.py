@@ -20,8 +20,8 @@ parser.add_argument('-i', '--a_id', help='resourceID of the child_dict to retrie
 
 args = parser.parse_args()
 
-if args.id:
-    resourceID = args.id
+if args.a_id:
+    resourceID = args.a_id
 else:
     resourceID = input('Enter resource ID: ')
 
@@ -48,9 +48,10 @@ def find_key(d, key):
                     yield j
 
 
-endpoint = '/repositories/' + repository + '/resources/' + resourceID + '/tree'
+endpoint = '/repositories/' + repository + '/resources/' + resourceID + '/tree/root'
 print(endpoint)
 output = requests.get(base_url + endpoint, headers=headers).json()
+print(output)
 archivalObjects = []
 for value in find_key(output, 'record_uri'):
     archivalObjects.append(value)

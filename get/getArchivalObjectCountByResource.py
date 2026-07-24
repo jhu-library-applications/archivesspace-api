@@ -1,9 +1,13 @@
+"""Creates a CSV with a count of archival objects by series and subseries for a particular resource. """
+
 import requests
 import secret
 import time
-import csv
+import argparse
+import pandas as pd
+from datetime import datetime
 
-secretVersion = input('To edit production server, enter the name of the secret file: ')
+secretVersion = input('To edit production server, enter secret file name: ')
 if secretVersion != '':
     try:
         secret = __import__(secretVersion)
@@ -13,74 +17,67 @@ if secretVersion != '':
 else:
     print('Editing Development')
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', '--a_id', help='resourceID of the child_dict to retrieve.')
+
+args = parser.parse_args()
+
+if args.a_id:
+    resourceID = args.a_id
+else:
+    resourceID = input('Enter resource ID: ')
+
 startTime = time.time()
-
-
-def find_key(d, key):
-    if key in d:
-        yield d[key]
-    for k in d:
-        if isinstance(d[k], list) and k == 'children':
-            for i in d[k]:
-                for j in find_key(i, key):
-                    yield j
-
 
 base_url = secret.base_url
 user = secret.user
 password = secret.password
 repository = secret.repository
 
-auth = requests.post(base_url + '/users/'+user+'/login?password='+password).json()
+repository = str(repository)
+auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
 session = auth["session"]
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}
 
-repository = str(repository)
-endpoint = '/repositories/'+repository+'/resources?all_ids=true'
+def get_children_metadata(child_object):
+    child_details = {}
+    child_title = child_object['title']
+    print(child_title)
+    child_uri = child_object['uri']
+    has_children = child_object['has_children']
+    child_details['title'] = child_title
+    child_details['uri'] = child_uri
+    child_details['has_children'] = has_children
+    if has_children is True:
+        descendants = child_object['children']
+        number_descendants = len(descendants)
+        child_details['descendants'] = number_descendants
+    else:
+        descendants = None
+    to_save.append(child_details)
+    return descendants
 
-ids = requests.get(base_url+endpoint, headers=headers).json()
-print(len(ids))
+to_save = []
+endpoint = '/bulk_archival_object_updater/repositories/' + repository + '/resources/' + resourceID + '/small_tree'
+print(endpoint)
+output = requests.get(base_url + endpoint, headers=headers).json()
+children = output['children']
+for child in children:
+    second_children = get_children_metadata(child)
+    if second_children:
+        for second in second_children:
+            third_children = get_children_metadata(second)
+            if third_children:
+                for third in third_children:
+                    fourth_children = get_children_metadata(third)
+                    if fourth_children:
+                        for fourth in fourth_children:
+                            fifth_children = get_children_metadata(fourth)
+                            print(len(fifth_children))
 
-f = csv.writer(open('archivalObjectCountByResource.csv', 'w'))
-f.writerow(['title']+['bib']+['uri']+['id_0']+['id_1']+['id_2']+['id_3']+['aoCount'])
+df = pd.DataFrame.from_records(to_save)
+print(df.head)
+dt = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
+df.to_csv('archival_objects_'+dt+'.csv', index=False)
 
-records = []
-for resource_id in ids:
-    print(resource_id)
-    endpoint = '/repositories/'+repository+'/resources/'+str(resource_id)
-    output = requests.get(base_url + endpoint, headers=headers).json()
-    title = output['title']
-    uri = output['uri']
-    id0 = output['id_0']
-    try:
-        bib = output['user_defined']['real_1']
-    except KeyError:
-        bib = ''
-    try:
-        id1 = output['id_1']
-    except KeyError:
-        id1 = ''
-    try:
-        id2 = output['id_2']
-    except KeyError:
-        id2 = ''
-    try:
-        id3 = output['id_3']
-    except KeyError:
-        id3 = ''
 
-    treeEndpoint = '/repositories/'+repository+'/resources/'+str(resource_id)+'/tree'
-
-    output2 = requests.get(base_url + treeEndpoint, headers=headers).json()
-    archivalObjects = []
-    for value in find_key(output2, 'record_uri'):
-        print(value)
-        if 'archival_objects' in value:
-            archivalObjects.append(value)
-    aoCount = len(archivalObjects)
-    f.writerow([title]+[bib]+[uri]+[id0]+[id1]+[id2]+[id3]+[aoCount])
-
-elapsedTime = time.time() - startTime
-m, s = divmod(elapsedTime, 60)
-h, m = divmod(m, 60)
-print('Total script run time: ', '%d:%02d:%02d' % (h, m, s))

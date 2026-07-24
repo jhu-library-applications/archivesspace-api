@@ -1,3 +1,5 @@
+"""Posts containers to records based on a specified CSV file of top container and resource URIs."""
+
 import json
 import requests
 import secret

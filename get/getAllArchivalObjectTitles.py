@@ -1,3 +1,5 @@
+"""Retrieves titles from all archival objects in a repository"""
+
 import requests
 import secret
 import time

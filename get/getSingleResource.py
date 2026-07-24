@@ -1,3 +1,5 @@
+"""Based on user input, retrieves a single ArchivesSpace JSON record based on the specified record's 'URI'."""
+
 import json
 import requests
 import argparse
@@ -33,7 +35,6 @@ repository = secret.repository
 verify = secret.verify
 
 auth = requests.post(base_url+'/users/'+user+'/login?password='+password).json()
-
 session = auth['session']
 print('Session: '+session)
 headers = {'X-ArchivesSpace-Session': session, 'Content_Type': 'application/json'}

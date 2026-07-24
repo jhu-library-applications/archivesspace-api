@@ -1,3 +1,5 @@
+"""Retrieves all top containers from a particular repository into a JSON file."""
+
 import json
 import requests
 import secret

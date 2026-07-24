@@ -1,3 +1,5 @@
+"""Based on user input, posts containers to a specified record based on a specified CSV file."""
+
 import json
 import requests
 import secret

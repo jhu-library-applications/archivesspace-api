@@ -1,3 +1,5 @@
+"""Retrieves specific properties from the JSON of ArchivesSpace archival_object records into a CSV file."""
+
 import requests
 import secret
 import pandas as pd

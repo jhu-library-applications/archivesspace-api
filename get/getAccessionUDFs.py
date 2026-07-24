@@ -1,3 +1,5 @@
+"""Retrieves all user-defined fields from all accessions in the specified repository."""
+
 import requests
 import secret
 import time

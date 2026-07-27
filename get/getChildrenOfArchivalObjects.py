@@ -47,12 +47,19 @@ for count, row in df.iterrows():
     output = requests.get(base_url+endpoint, headers=headers).json()
     total_objects = len(output)
     for object_count, child in enumerate(output):
-        object_log = {}
         print('{} of {}'.format(object_count+1, total_objects))
         parent = child['parent']['ref']
         title = child['title']
         uri = child['uri']
         object_log = {'parent': parent, 'title': title, 'uri': uri}
+        try:
+            sub_container = child['instances'][0]['sub_container']
+            top_container = sub_container['top_container']['ref']
+            folder = sub_container['indicator_2']
+            object_log['top_container'] = top_container
+            object_log['folder'] = folder
+        except IndexError:
+            pass
         log.append(object_log)
 
 df = pd.DataFrame.from_records(log)
